@@ -82,12 +82,12 @@ function FileInputField({
       </div>
 
       {isSubmitted && !validationFunctionName(value) && isFieldRequired && (
-        <p className="text-red-500  relative text-[13px] left-0 top-[-10px]">
+        <p className="text-red-500  relative text-[13px] left-0 top-[-20px]">
           {errorMessage}
         </p>
       )}
       {ifInvalid && (
-        <p className="text-red-500  relative text-[13px] left-0 top-[-10px] ">
+        <p className="text-red-500  relative text-[13px] left-0 top-[-20px] ">
           {errorMessage}
         </p>
       )}

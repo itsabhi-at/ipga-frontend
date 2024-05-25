@@ -15,6 +15,7 @@ import {
   validateDropDownField,
   validateEmailField,
   validateFileField,
+  validatePassport,
   validateTextField,
 } from "../constants/validations";
 
@@ -82,6 +83,10 @@ function Registration() {
   const [aadharCardNumber, setAadharCardNumber] = useState("");
   const [aadharUpload, setAadharUpload] = useState("");
   const [isAadharUploaded, setIsAadharUploaded] = useState(false);
+  const [passportNumber, setPassportNumber] = useState("");
+  const [passportUpload, setPassportUpload] = useState("");
+  const [isPassportUploaded, setIsPassportUploaded] = useState(false);
+  const [address, setAddress] = useState("");
   const [isFormSubmitted, setIsFormSubmitted] = useState(false);
   const [formOneSubmitted, setFormOneSubmitted] = useState(false);
   const [formTwoSubmitted, setFormTwoSubmitted] = useState(false);
@@ -121,6 +126,21 @@ function Registration() {
         reader.readAsDataURL(file);
       }
     }
+    if (name === "passportNumber") setPassportNumber(value);
+    if (name === "passportUpload") {
+      setIsPassportUploaded(true);
+      // setAadharFront(event.target.files[0]);
+      const file = event.target.files[0];
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = function (e) {
+          const base64WithoutPrefix = e.target.result;
+          setPassportUpload(base64WithoutPrefix);
+        };
+        reader.readAsDataURL(file);
+      }
+    }
+    if (name === "address") setAddress(value);
   };
   const isFieldRequired = (fieldName) => {
     const requiredFields = [
@@ -133,6 +153,9 @@ function Registration() {
       "gstUpload",
       "aadharCardNumber",
       "aadharUpload",
+      "passportNumber",
+      "passportUpload",
+      "address",
     ];
     return requiredFields.includes(fieldName);
   };
@@ -159,6 +182,12 @@ function Registration() {
       !isFieldRequired("aadharCardNumber") || validateAadhar(aadharCardNumber);
     const isAadharUploadValid =
       !isFieldRequired("aadharUpload") || validateFileField(aadharUpload);
+    const isPassportNumberValid =
+      !isFieldRequired("passportNumber") || validatePassport(passportNumber);
+    const isPassportUploadValid =
+      !isFieldRequired("passportUpload") || validateFileField(passportUpload);
+    const isAddressValid =
+      !isFieldRequired("address") || validateTextField(address);
     // Set overall form validity
     setIsFormSubmitted(true);
 
@@ -170,7 +199,9 @@ function Registration() {
       isDesignationValid &&
       isGstUploadValid &&
       isAadharNumberValid &&
-      isAadharUploadValid
+      isAadharUploadValid &&
+      isPassportNumberValid &&
+      isPassportUploadValid
     ) {
       console.log(firstName);
 
@@ -361,7 +392,7 @@ function Registration() {
                       errorMessage={"Field is required"}
                     />
                     <NumberInputField
-                      labelText={"Aadhar Card Number"}
+                      labelText={"Aadhar Card Number (Indian Delegates)"}
                       placeholder={"Enter your Aadhar Card Number"}
                       htmlFor={"aadharCardNumber"}
                       name={"aadharCardNumber"}
@@ -387,6 +418,46 @@ function Registration() {
                       photoUploaded={isAadharUploaded}
                       isSubmitted={isFormSubmitted}
                       errorMessage={"Field is required"}
+                    />
+                    <NumberInputField
+                      labelText={"Passport Number (International Delegates)"}
+                      placeholder={"Enter your Passport Number"}
+                      htmlFor={"passportNumber"}
+                      name={"passportNumber"}
+                      value={passportNumber}
+                      placeholderImage={fIcon}
+                      errorMessage={"Passport Number is required"}
+                      handleInputChange={handleInputChange}
+                      validationFunctionName={validatePassport}
+                      isFieldRequired={isFieldRequired("passportNumber")}
+                      isSubmitted={isFormSubmitted}
+                    />
+                    <FileInputField
+                      labelText={"Passport Upload (International Delegates)"}
+                      placeholder={"Upload Passport"}
+                      placeholderImage={fIcon}
+                      htmlFor={"passportUpload"}
+                      name={"passportUpload"}
+                      value={passportUpload}
+                      validationFunctionName={validateFileField}
+                      handleInputChange={handleInputChange}
+                      isFieldRequired={isFieldRequired("passportUpload")}
+                      photoUploaded={isPassportUploaded}
+                      isSubmitted={isFormSubmitted}
+                      errorMessage={"Field is required"}
+                    />
+                    <TextInputField
+                      labelText={"Enter your Complete Address"}
+                      placeholder={"address"}
+                      htmlFor={"address"}
+                      name={"address"}
+                      value={address}
+                      placeholderImage={fIcon}
+                      errorMessage={"Address is required"}
+                      handleInputChange={handleInputChange}
+                      validationFunctionName={validateTextField}
+                      isFieldRequired={isFieldRequired("address")}
+                      isSubmitted={isFormSubmitted}
                     />
                     <button
                       type="button"
