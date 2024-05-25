@@ -20,23 +20,21 @@ function Login() {
           <p className="w-full text-center font-medium">
             Welcome, BHARAT DALHAN SEMINAR 2024
           </p>
-          <p className="w-full text-center my-8">
-            Please Login or Sign Up to continue
-          </p>
-          <div className="flex items-center justify-center w-full">
+          <p className="w-full text-center my-8">Please Login or Sign Up</p>
+          {/* <div className="flex items-center justify-center w-full">
             {" "}
             <Image alt="login" src={login} height={200} width={300} />
-          </div>
+          </div> */}
           <div className="flex items-center justify-center gap-x-12 w-full my-8">
             <button
               onClick={() => setModalIsOpen(true)}
-              className=" bg-white rounded-md px-4 py-2 secondary-color-text"
+              className=" bg-white rounded-md px-4 py-2 secondary-color-text hover:shadow-lg"
             >
               Login
             </button>
             <button
               onClick={() => setSignUpIsOpen(true)}
-              className=" secondary-color-bg rounded-md px-4 py-2 text-white"
+              className=" secondary-color-bg rounded-md px-4 py-2 text-white hover:shadow-lg"
             >
               Sign Up
             </button>

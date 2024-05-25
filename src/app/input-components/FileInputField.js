@@ -25,22 +25,20 @@ function FileInputField({
   }, [validationFunctionName, value]);
   return (
     <div className="relative space-y-2">
-      <label className="text-white text-sm" htmlFor={htmlFor}>
+      <label className="text-black text-[14px] block" htmlFor={htmlFor}>
         {labelText}
         {isFieldRequired ? <span className="tertiary-color-text">*</span> : ""}
       </label>
       <div className="relative">
         <div
-          className={` absolute left-0 top-0 rounded-lg  pointer-events-none  w-full p-4 pl-12  border-[#FCFCFC29] border-opacity-20 text-sm ${
-            darkField
-              ? "bg-[#d9d9d9] bg-opacity-10"
-              : "bg-[#FCFCFC29] bg-opacity-20 border"
+          className={` absolute left-0 top-0 rounded-lg  pointer-events-none  w-full p-[10px] pl-10  border-[#FCFCFC29] border-opacity-20 text-sm ${
+            darkField ? "bg-[#ffffff]" : "bg-[#ffffff] border"
           }`}
         >
           {photoUploaded || value != "" ? (
-            <span className="text-white">File Uploaded Successfully</span>
+            <span className="text-[#9CA3AF]">File Uploaded Successfully</span>
           ) : (
-            <span className="text-white">Upload File</span>
+            <span className="text-[#9CA3AF]">Upload File</span>
           )}
         </div>
         <input
@@ -74,11 +72,10 @@ function FileInputField({
             }
           }}
         />
-
         <Image
-          height={28}
-          width={28}
-          className="absolute left-3 top-3 h-7 w-7"
+          className="absolute left-[12px] top-[10px]"
+          height={12}
+          width={16}
           src={placeholderImage}
           alt={""}
         />

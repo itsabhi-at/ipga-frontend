@@ -7,13 +7,14 @@ import circle from "@/app/assets/circle.png";
 import toast from "react-hot-toast";
 import { useRouter } from "next/navigation";
 import { usePostCallWithoutAuthMutation } from "@/app/services/universalApi";
-
 import fIcon from "@/app/assets/profile.svg";
 import mail from "@/app/assets/mail.svg";
 import Modal from "react-modal";
 import {
+  validateAadhar,
   validateDropDownField,
   validateEmailField,
+  validateFileField,
   validateTextField,
 } from "../constants/validations";
 
@@ -22,6 +23,8 @@ import { AiOutlineClose } from "react-icons/ai";
 import DropdownField from "../input-components/DropdownField";
 import TextInputField from "../input-components/TextInputField";
 import EmailInputField from "../input-components/EmailInputField";
+import FileInputField from "../input-components/FileInputField";
+import NumberInputField from "../input-components/NumberInputField";
 function Registration() {
   const router = useRouter();
   // mutations here
@@ -74,6 +77,11 @@ function Registration() {
   const [email, setEmail] = useState("");
   const [organization, setOrganization] = useState("");
   const [designation, setDesignation] = useState("");
+  const [gstUpload, setGstUpload] = useState("");
+  const [isGstPhotoUploaded, setIsGstPhotoUploaded] = useState(false);
+  const [aadharCardNumber, setAadharCardNumber] = useState("");
+  const [aadharUpload, setAadharUpload] = useState("");
+  const [isAadharUploaded, setIsAadharUploaded] = useState(false);
   const [isFormSubmitted, setIsFormSubmitted] = useState(false);
   const [formOneSubmitted, setFormOneSubmitted] = useState(false);
   const [formTwoSubmitted, setFormTwoSubmitted] = useState(false);
@@ -86,6 +94,33 @@ function Registration() {
     if (name === "email") setEmail(value);
     if (name === "organization") setOrganization(value);
     if (name === "designation") setDesignation(value);
+    if (name === "gstUpload") {
+      setIsGstPhotoUploaded(true);
+      // setAadharFront(event.target.files[0]);
+      const file = event.target.files[0];
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = function (e) {
+          const base64WithoutPrefix = e.target.result;
+          setGstUpload(base64WithoutPrefix);
+        };
+        reader.readAsDataURL(file);
+      }
+    }
+    if (name === "aadharCardNumber") setAadharCardNumber(value);
+    if (name === "aadharUpload") {
+      setIsAadharUploaded(true);
+      // setAadharFront(event.target.files[0]);
+      const file = event.target.files[0];
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = function (e) {
+          const base64WithoutPrefix = e.target.result;
+          setAadharUpload(base64WithoutPrefix);
+        };
+        reader.readAsDataURL(file);
+      }
+    }
   };
   const isFieldRequired = (fieldName) => {
     const requiredFields = [
@@ -95,6 +130,9 @@ function Registration() {
       "email",
       "organization",
       "designation",
+      "gstUpload",
+      "aadharCardNumber",
+      "aadharUpload",
     ];
     return requiredFields.includes(fieldName);
   };
@@ -104,73 +142,81 @@ function Registration() {
   const handleFormSubmit = async (event) => {
     event.preventDefault();
     setModalIsOpen(true);
-    // // Perform validation for each input
-    // const isGenderValid =
-    //   !isFieldRequired("gender") || validateDropDownField(gender);
-    // const isFirstNameValid =
-    //   !isFieldRequired("firstName") || validateTextField(firstName);
-    // const isLastNameValid =
-    //   !isFieldRequired("lastName") || validateTextField(lastName);
-    // const isOrgValid =
-    //   !isFieldRequired("organization") || validateTextField(organization);
-    // const isDesignationValid =
-    //   !isFieldRequired("designation") || validateTextField(designation);
+    // Perform validation for each input
+    const isGenderValid =
+      !isFieldRequired("gender") || validateDropDownField(gender);
+    const isFirstNameValid =
+      !isFieldRequired("firstName") || validateTextField(firstName);
+    const isLastNameValid =
+      !isFieldRequired("lastName") || validateTextField(lastName);
+    const isOrgValid =
+      !isFieldRequired("organization") || validateTextField(organization);
+    const isDesignationValid =
+      !isFieldRequired("designation") || validateTextField(designation);
+    const isGstUploadValid =
+      !isFieldRequired("gstUpload") || validateFileField(gstUpload);
+    const isAadharNumberValid =
+      !isFieldRequired("aadharCardNumber") || validateAadhar(aadharCardNumber);
+    const isAadharUploadValid =
+      !isFieldRequired("aadharUpload") || validateFileField(aadharUpload);
+    // Set overall form validity
+    setIsFormSubmitted(true);
 
-    // // Set overall form validity
-    // setIsFormSubmitted(true);
+    if (
+      isGenderValid &&
+      isFirstNameValid &&
+      isLastNameValid &&
+      isOrgValid &&
+      isDesignationValid &&
+      isGstUploadValid &&
+      isAadharNumberValid &&
+      isAadharUploadValid
+    ) {
+      console.log(firstName);
 
-    // if (
-    //   isGenderValid &&
-    //   isFirstNameValid &&
-    //   isLastNameValid &&
-    //   isOrgValid &&
-    //   isDesignationValid
-    // ) {
-    //   console.log(firstName);
+      let body = {};
 
-    //   let body = {};
-
-    //   //   if (isDataFound) {
-    //   //     // make put call
-    //   //     await putCallMutation({
-    //   //       domain: domain,
-    //   //       accessToken,
-    //   //       endPoint: "user-profile/update",
-    //   //       body,
-    //   //     })
-    //   //       .unwrap()
-    //   //       .then((res) => {
-    //   //         if (res.status == "success") {
-    //   //           router.push("/onboarding/bankdetails/");
-    //   //         } else {
-    //   //           toast.error(res.message);
-    //   //         }
-    //   //       })
-    //   //       .catch((e) => toast.error(e.message));
-    //   //   } else {
-    //   //     // make post call
-    //   //     await postCallMutation({
-    //   //       domain: domain,
-    //   //       accessToken,
-    //   //       endPoint: "user-profile",
-    //   //       body,
-    //   //     })
-    //   //       .unwrap()
-    //   //       .then((res) => {
-    //   //         if (res.status == "success") {
-    //   //           router.push("/onboarding/bankdetails/");
-    //   //         } else {
-    //   //           toast.error(res.message);
-    //   //         }
-    //   //       })
-    //   //       .catch((e) => toast.error(e.message));
-    //   //   }
-    // } else {
-    //   console.log("Form Not Valid");
-    //   //   if (!tnc) {
-    //   //     toast.info("Please agree to the Terms of Service");
-    //   //   }
-    // }
+      //   if (isDataFound) {
+      //     // make put call
+      //     await putCallMutation({
+      //       domain: domain,
+      //       accessToken,
+      //       endPoint: "user-profile/update",
+      //       body,
+      //     })
+      //       .unwrap()
+      //       .then((res) => {
+      //         if (res.status == "success") {
+      //           router.push("/onboarding/bankdetails/");
+      //         } else {
+      //           toast.error(res.message);
+      //         }
+      //       })
+      //       .catch((e) => toast.error(e.message));
+      //   } else {
+      //     // make post call
+      //     await postCallMutation({
+      //       domain: domain,
+      //       accessToken,
+      //       endPoint: "user-profile",
+      //       body,
+      //     })
+      //       .unwrap()
+      //       .then((res) => {
+      //         if (res.status == "success") {
+      //           router.push("/onboarding/bankdetails/");
+      //         } else {
+      //           toast.error(res.message);
+      //         }
+      //       })
+      //       .catch((e) => toast.error(e.message));
+      //   }
+    } else {
+      console.log("Form Not Valid");
+      //   if (!tnc) {
+      //     toast.info("Please agree to the Terms of Service");
+      //   }
+    }
   };
   return (
     <main className="h-auto md:h-screen md:bg-white bg-[#F3F5F8] min-h-screen relative">
@@ -201,7 +247,7 @@ function Registration() {
             />
           </div>
 
-          <div className="h-full w-full flex items-center justify-center">
+          <div className="h-full max-h-[84vh] w-full flex items-center justify-center">
             {!modalIsOpen && (
               <div className="bg-white bg-opacity-70 h-[80%] w-[50%] overflow-auto rounded-lg p-4 text-black">
                 <div className="w-full flex flex-col justify-center items-center">
@@ -300,7 +346,48 @@ function Registration() {
                       isFieldRequired={isFieldRequired("designation")}
                       isSubmitted={isFormSubmitted}
                     />
-
+                    <FileInputField
+                      labelText={"GST No. Upload (Indian Delegates)"}
+                      placeholder={"Upload GST No."}
+                      placeholderImage={fIcon}
+                      htmlFor={"gstUpload"}
+                      name={"gstUpload"}
+                      value={gstUpload}
+                      validationFunctionName={validateFileField}
+                      handleInputChange={handleInputChange}
+                      isFieldRequired={isFieldRequired("gstUpload")}
+                      photoUploaded={isGstPhotoUploaded}
+                      isSubmitted={isFormSubmitted}
+                      errorMessage={"Field is required"}
+                    />
+                    <NumberInputField
+                      labelText={"Aadhar Card Number"}
+                      placeholder={"Enter your Aadhar Card Number"}
+                      htmlFor={"aadharCardNumber"}
+                      name={"aadharCardNumber"}
+                      value={aadharCardNumber}
+                      placeholderImage={fIcon}
+                      errorMessage={"Aadhar Card is required"}
+                      handleInputChange={handleInputChange}
+                      validationFunctionName={validateAadhar}
+                      isFieldRequired={isFieldRequired("aadharCardNumber")}
+                      isSubmitted={isFormSubmitted}
+                      maxLength={12}
+                    />
+                    <FileInputField
+                      labelText={"Aadhar Card Upload (Indian Delegates)"}
+                      placeholder={"Upload Aadhar Card"}
+                      placeholderImage={fIcon}
+                      htmlFor={"aadharUpload"}
+                      name={"aadharUpload"}
+                      value={aadharUpload}
+                      validationFunctionName={validateFileField}
+                      handleInputChange={handleInputChange}
+                      isFieldRequired={isFieldRequired("aadharUpload")}
+                      photoUploaded={isAadharUploaded}
+                      isSubmitted={isFormSubmitted}
+                      errorMessage={"Field is required"}
+                    />
                     <button
                       type="button"
                       onClick={handleFormSubmit}
