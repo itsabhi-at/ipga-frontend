@@ -270,7 +270,7 @@ function Registration() {
 
           <div className="h-full max-h-[70vh] md:max-h-[84vh] w-full md:flex items-center justify-center overflow-auto my-4 md:my-0">
             {!modalIsOpen && (
-              <div className="bg-white bg-opacity-70 md:h-[80%] md:w-[50%] rounded-lg p-4 text-black">
+              <div className="bg-white bg-opacity-70 md:h-[80%] md:w-[50%] rounded-lg p-4 text-black overflow-auto">
                 <div className="w-full flex flex-col justify-center items-center">
                   <h1 className="text-2xl text-black font-medium">Welcome</h1>
                   <p className=" text-black py-4">
@@ -511,7 +511,7 @@ function Registration() {
               <p className="text-[18px] text-black font-medium mb-8">
                 Delegate
               </p>
-              <div className="w-1/2 space-y-4">
+              <div className=" w-full md:w-1/2 space-y-4">
                 <div className="flex flex-col w-full">
                   <label
                     htmlFor=""
