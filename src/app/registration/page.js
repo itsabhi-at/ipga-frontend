@@ -7,7 +7,7 @@ import circle from "@/app/assets/circle.png";
 import toast from "react-hot-toast";
 import { useRouter } from "next/navigation";
 import { usePostCallWithoutAuthMutation } from "@/app/services/universalApi";
-import TextInputField from "../components/TextInputField";
+
 import fIcon from "@/app/assets/profile.svg";
 import mail from "@/app/assets/mail.svg";
 import Modal from "react-modal";
@@ -16,10 +16,12 @@ import {
   validateEmailField,
   validateTextField,
 } from "../constants/validations";
-import EmailInputField from "../components/EmailInputField";
-import DropdownField from "../components/DropdownField";
+
 import bgImage from "@/app/assets/bgImage.jpeg";
 import { AiOutlineClose } from "react-icons/ai";
+import DropdownField from "../input-components/DropdownField";
+import TextInputField from "../input-components/TextInputField";
+import EmailInputField from "../input-components/EmailInputField";
 function Registration() {
   const router = useRouter();
   // mutations here
