@@ -5,10 +5,55 @@ import Image from "next/image";
 import { AiOutlineClose } from "react-icons/ai";
 import Modal from "react-modal";
 import { useRouter } from "next/navigation";
+import { usePostCallWithoutAuthMutation } from "../services/universalApi";
+import toast from "react-hot-toast";
 function Login() {
   const router = useRouter();
   const [modalIsOpen, setModalIsOpen] = useState(false);
   const [signUpIsOpen, setSignUpIsOpen] = useState(false);
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [signUpCall] = usePostCallWithoutAuthMutation();
+  const [loginCall] = usePostCallWithoutAuthMutation();
+  const handleInputOnChange = (e) => {
+    const { name, value } = e.target;
+    if (name === "email") setEmail(value);
+    if (name === "password") setPassword(value);
+  };
+  const handleSignUp = async (e) => {
+    e.preventDefault();
+    await signUpCall({
+      url: "",
+      body: {},
+    })
+      .unwrap()
+      .then((res) => {
+        if (res.status == "success") {
+          router.push("/registration");
+          // save access token
+        } else {
+          toast.error(res?.message);
+        }
+      })
+      .catch((e) => toast.error(e?.message));
+  };
+  const handleLogin = async (e) => {
+    e.preventDefault();
+    await loginCall({
+      url: "",
+      body: {},
+    })
+      .unwrap()
+      .then((res) => {
+        if (res.status == "success") {
+          router.push("/registration");
+          // save access token
+        } else {
+          toast.error(res?.message);
+        }
+      })
+      .catch((e) => toast.error(e?.message));
+  };
   return (
     <div className="min-h-screen relative z-30">
       <div
@@ -45,7 +90,7 @@ function Login() {
         isOpen={modalIsOpen}
         onRequestClose={() => setModalIsOpen(false)}
         contentLabel="Custom Modal"
-        className="custom-modal h-[60%] w-[60%] absolute top-1/2 -translate-y-1/2 left-1/2 -translate-x-1/2"
+        className="custom-modal h-[60%] md:w-[60%] w-[90%] absolute top-1/2 -translate-y-1/2 left-1/2 -translate-x-1/2"
         // style={customStyles}
         overlayClassName={"product-modal"}
         ariaHideApp={false}
@@ -64,29 +109,40 @@ function Login() {
               </p>
               <div className="w-1/2 space-y-4">
                 <div className="flex flex-col w-full">
-                  <label htmlFor="" className="text-white text-[14px] block">
+                  <label
+                    htmlFor="email"
+                    className="text-white text-[14px] block"
+                  >
                     Email
                   </label>
                   <input
+                    name="email"
+                    value={email}
+                    onChange={handleInputOnChange}
                     placeholder="Enter email address"
                     className="w-full p-2 outline-none border border-gray-300 rounded-md mb-2 text-[15px] text-white bg-transparent"
                     type="email"
                   />
                 </div>
                 <div className="flex flex-col w-full">
-                  <label htmlFor="" className="text-white text-[14px] block">
+                  <label
+                    htmlFor="password"
+                    className="text-white text-[14px] block"
+                  >
                     Password
                   </label>
                   <input
+                    onChange={handleInputOnChange}
+                    value={password}
+                    name="password"
                     placeholder="Enter password"
                     className="w-full p-2 outline-none border border-gray-300 rounded-md mb-2 text-[15px] text-white bg-transparent"
                     type="password"
                   />
                 </div>
                 <button
-                  onClick={() => {
-                    router.push("/registration");
-                  }}
+                  onClick={handleLogin}
+                  type="button"
                   className="bg-[#c1c1c1] hover:bg-[#929292] rounded-md text-black px-4 py-2"
                 >
                   Login
@@ -100,7 +156,7 @@ function Login() {
         isOpen={signUpIsOpen}
         onRequestClose={() => setSignUpIsOpen(false)}
         contentLabel="Custom Modal"
-        className="custom-modal h-[60%] w-[60%] absolute top-1/2 -translate-y-1/2 left-1/2 -translate-x-1/2"
+        className="custom-modal h-[60%] md:w-[60%] w-[90%] absolute top-1/2 -translate-y-1/2 left-1/2 -translate-x-1/2"
         // style={customStyles}
         overlayClassName={"product-modal"}
         ariaHideApp={false}
@@ -119,26 +175,42 @@ function Login() {
               </p>
               <div className="w-1/2 space-y-4">
                 <div className="flex flex-col w-full">
-                  <label htmlFor="" className="text-white text-[14px] block">
+                  <label
+                    htmlFor="email"
+                    className="text-white text-[14px] block"
+                  >
                     Email
                   </label>
                   <input
+                    name="email"
+                    value={email}
+                    onChange={handleInputOnChange}
                     placeholder="Enter email address"
                     className="w-full p-2 outline-none border border-gray-300 rounded-md mb-2 text-[15px] text-white bg-transparent"
                     type="email"
                   />
                 </div>
                 <div className="flex flex-col w-full">
-                  <label htmlFor="" className="text-white text-[14px] block">
+                  <label
+                    htmlFor="password"
+                    className="text-white text-[14px] block"
+                  >
                     Password
                   </label>
                   <input
+                    onChange={handleInputOnChange}
+                    value={password}
+                    name="password"
                     placeholder="Enter password"
                     className="w-full p-2 outline-none border border-gray-300 rounded-md mb-2 text-[15px] text-white bg-transparent"
                     type="password"
                   />
                 </div>
-                <button className="bg-[#c1c1c1] hover:bg-[#929292] rounded-md text-black px-4 py-2">
+                <button
+                  onClick={handleSignUp}
+                  type="button"
+                  className="bg-[#c1c1c1] hover:bg-[#929292] rounded-md text-black px-4 py-2"
+                >
                   Sign Up
                 </button>
               </div>

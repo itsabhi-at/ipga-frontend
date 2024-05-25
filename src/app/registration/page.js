@@ -2,7 +2,7 @@
 import React, { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { FcGoogle } from "react-icons/fc";
+import { FcCheckmark, FcGoogle } from "react-icons/fc";
 import circle from "@/app/assets/circle.png";
 import toast from "react-hot-toast";
 import { useRouter } from "next/navigation";
@@ -95,8 +95,13 @@ function Registration() {
   const [formOneSubmitted, setFormOneSubmitted] = useState(false);
   const [formTwoSubmitted, setFormTwoSubmitted] = useState(false);
   const [modalIsOpen, setModalIsOpen] = useState(false);
+  const [delegateCode, setDelegateCode] = useState("");
+  const [isCodeValid, setIsCodeValid] = useState(false);
+
   const handleInputChange = (event) => {
     const { name, value } = event.target;
+
+    if (name === "delegateCode") setDelegateCode(value);
     if (name === "gender") setGender(value);
     if (name === "firstName") setFirstName(value);
     if (name === "lastName") setLastName(value);
@@ -145,6 +150,9 @@ function Registration() {
       }
     }
     if (name === "address") setAddress(value);
+    if (name === "phone") setPhone(value);
+    if (name === "businessPhone") setBusinessPhone(value);
+    if (name === "mobile") setMobile(value);
   };
   const isFieldRequired = (fieldName) => {
     const requiredFields = [
@@ -166,9 +174,7 @@ function Registration() {
     ];
     return requiredFields.includes(fieldName);
   };
-  const submitForm1 = () => {
-    setFormOneSubmitted(true);
-  };
+
   const handleFormSubmit = async (event) => {
     event.preventDefault();
     setModalIsOpen(true);
@@ -219,51 +225,57 @@ function Registration() {
       isBusinessPhoneValid &&
       isMobileValid
     ) {
-      console.log(firstName);
-
       let body = {};
+      console.log(gender);
+      console.log(firstName);
+      console.log(lastName);
+      console.log(email);
+      console.log(organization);
+      console.log(designation);
+      console.log(gstUpload);
+      console.log(aadharCardNumber);
+      console.log(aadharUpload);
+      console.log(passportNumber);
+      console.log(passportUpload);
+      console.log(address);
+      console.log(phone);
+      console.log(businessPhone);
+      console.log(mobile);
 
-      //   if (isDataFound) {
-      //     // make put call
-      //     await putCallMutation({
-      //       domain: domain,
-      //       accessToken,
-      //       endPoint: "user-profile/update",
-      //       body,
-      //     })
-      //       .unwrap()
-      //       .then((res) => {
-      //         if (res.status == "success") {
-      //           router.push("/onboarding/bankdetails/");
-      //         } else {
-      //           toast.error(res.message);
-      //         }
-      //       })
-      //       .catch((e) => toast.error(e.message));
-      //   } else {
-      //     // make post call
-      //     await postCallMutation({
-      //       domain: domain,
-      //       accessToken,
-      //       endPoint: "user-profile",
-      //       body,
-      //     })
-      //       .unwrap()
-      //       .then((res) => {
-      //         if (res.status == "success") {
-      //           router.push("/onboarding/bankdetails/");
-      //         } else {
-      //           toast.error(res.message);
-      //         }
-      //       })
-      //       .catch((e) => toast.error(e.message));
-      //   }
+      // if (isDataFound) {
+      // make put call
+      // await putCallMutation({})
+      //   .unwrap()
+      //   .then((res) => {
+      //     if (res.status == "success") {
+      //       router.push("/onboarding/bankdetails/");
+      //     } else {
+      //       toast.error(res.message);
+      //     }
+      //   })
+      //   .catch((e) => toast.error(e.message));
+      // } else {
+      // make post call
+      // await postCallMutation({})
+      //   .unwrap()
+      //   .then((res) => {
+      //     if (res.status == "success") {
+      //       router.push("/onboarding/bankdetails/");
+      //     } else {
+      //       toast.error(res.message);
+      //     }
+      //   })
+      //   .catch((e) => toast.error(e.message));
+      // }
     } else {
       console.log("Form Not Valid");
       //   if (!tnc) {
       //     toast.info("Please agree to the Terms of Service");
       //   }
     }
+  };
+  const handleDelegateVerification = async (event) => {
+    // api call to check
   };
   return (
     <main className="h-auto md:h-screen md:bg-white bg-[#F3F5F8] min-h-screen relative">
@@ -569,20 +581,49 @@ function Registration() {
               <div className=" w-full md:w-1/2 space-y-4">
                 <div className="flex flex-col w-full">
                   <label
-                    htmlFor=""
+                    htmlFor="delegateCode"
                     className="text-[#000] text-[14px] block mb-2"
                   >
                     Enter Delegate Code
                   </label>
                   <input
+                    name="delegateCode"
+                    value={delegateCode}
+                    onChange={handleInputChange}
                     placeholder="Delegate Code If Any?"
                     className="w-full p-2 outline-none border border-[#000] rounded-md mb-2 text-[15px] text-[#000] bg-transparent placeholder:text-gray-600"
                     type="email"
                   />
+                  {isCodeValid ? (
+                    <p className="text-green-700 text-sm font-medium">
+                      <span className="inline-block font-semibold">
+                        <FcCheckmark className="font-semibold" />
+                      </span>
+                      &nbsp; Code Applied Successfully
+                    </p>
+                  ) : null}
+                </div>
+
+                <div className="flex items-end justify-end">
+                  <button
+                    type="button"
+                    onClick={handleDelegateVerification}
+                    className="text-[#373737] border border-[#373737] p-2 rounded-md hover:shadow-lg"
+                  >
+                    Verify
+                  </button>
                 </div>
 
                 <div className="flex items-center justify-end text-black font-semibold">
-                  Total Price : 3540
+                  Total Price :{"  "}
+                  {isCodeValid ? (
+                    <span className="inline-block">
+                      &nbsp;
+                      <s>3540</s> 2360
+                    </span>
+                  ) : (
+                    "3540"
+                  )}
                 </div>
                 <div className="flex items-center justify-end gap-x-4 text-black font-semibold">
                   <button
