@@ -15,6 +15,7 @@ import {
   validateDropDownField,
   validateEmailField,
   validateFileField,
+  validateMobileNumber,
   validatePassport,
   validateTextField,
 } from "../constants/validations";
@@ -87,6 +88,9 @@ function Registration() {
   const [passportUpload, setPassportUpload] = useState("");
   const [isPassportUploaded, setIsPassportUploaded] = useState(false);
   const [address, setAddress] = useState("");
+  const [phone, setPhone] = useState("");
+  const [businessPhone, setBusinessPhone] = useState("");
+  const [mobile, setMobile] = useState("");
   const [isFormSubmitted, setIsFormSubmitted] = useState(false);
   const [formOneSubmitted, setFormOneSubmitted] = useState(false);
   const [formTwoSubmitted, setFormTwoSubmitted] = useState(false);
@@ -156,6 +160,9 @@ function Registration() {
       "passportNumber",
       "passportUpload",
       "address",
+      "phone",
+      "businessPhone",
+      "mobile",
     ];
     return requiredFields.includes(fieldName);
   };
@@ -188,6 +195,11 @@ function Registration() {
       !isFieldRequired("passportUpload") || validateFileField(passportUpload);
     const isAddressValid =
       !isFieldRequired("address") || validateTextField(address);
+    const isPhoneValid = !isFieldRequired("phone") || validateTextField(phone);
+    const isBusinessPhoneValid =
+      !isFieldRequired("businessPhone") || validateTextField(businessPhone);
+    const isMobileValid =
+      !isFieldRequired("mobile") || validateTextField(mobile);
     // Set overall form validity
     setIsFormSubmitted(true);
 
@@ -201,7 +213,11 @@ function Registration() {
       isAadharNumberValid &&
       isAadharUploadValid &&
       isPassportNumberValid &&
-      isPassportUploadValid
+      isPassportUploadValid &&
+      isAddressValid &&
+      isPhoneValid &&
+      isBusinessPhoneValid &&
+      isMobileValid
     ) {
       console.log(firstName);
 
@@ -438,7 +454,7 @@ function Registration() {
                     />
                     <TextInputField
                       labelText={"Enter your Complete Address"}
-                      placeholder={"address"}
+                      placeholder={"Address"}
                       htmlFor={"address"}
                       name={"address"}
                       value={address}
@@ -447,6 +463,45 @@ function Registration() {
                       handleInputChange={handleInputChange}
                       validationFunctionName={validateTextField}
                       isFieldRequired={isFieldRequired("address")}
+                      isSubmitted={isFormSubmitted}
+                    />
+                    <NumberInputField
+                      labelText={"Direct"}
+                      placeholder={"Enter your Phone Number"}
+                      htmlFor={"phone"}
+                      name={"phone"}
+                      value={phone}
+                      placeholderImage={fIcon}
+                      errorMessage={"Phone Number is required"}
+                      handleInputChange={handleInputChange}
+                      validationFunctionName={validateMobileNumber}
+                      isFieldRequired={isFieldRequired("phone")}
+                      isSubmitted={isFormSubmitted}
+                    />
+                    <NumberInputField
+                      labelText={"Business/Office"}
+                      placeholder={"Enter your Business/Office Number"}
+                      htmlFor={"businessPhone"}
+                      name={"businessPhone"}
+                      value={businessPhone}
+                      placeholderImage={fIcon}
+                      errorMessage={"Business Number is required"}
+                      handleInputChange={handleInputChange}
+                      validationFunctionName={validateMobileNumber}
+                      isFieldRequired={isFieldRequired("businessPhone")}
+                      isSubmitted={isFormSubmitted}
+                    />
+                    <NumberInputField
+                      labelText={"Mobile"}
+                      placeholder={"Enter your Mobile Number"}
+                      htmlFor={"mobile"}
+                      name={"mobile"}
+                      value={mobile}
+                      placeholderImage={fIcon}
+                      errorMessage={"Mobile Number is required"}
+                      handleInputChange={handleInputChange}
+                      validationFunctionName={validateMobileNumber}
+                      isFieldRequired={isFieldRequired("mobile")}
                       isSubmitted={isFormSubmitted}
                     />
                     <button
@@ -529,14 +584,18 @@ function Registration() {
                 <div className="flex items-center justify-end text-black font-semibold">
                   Total Price : 3540
                 </div>
-                <div className="flex items-center justify-end text-black font-semibold">
+                <div className="flex items-center justify-end gap-x-4 text-black font-semibold">
                   <button
-                    onClick={() => {
-                      // router.push("/");
-                    }}
+                    onClick={() => {}}
                     className="bg-[#373737] hover:bg-[#000000] rounded-md text-white px-4 py-2 hover:text-white"
                   >
-                    Next
+                    Pay Now
+                  </button>
+                  <button
+                    onClick={() => {}}
+                    className="bg-[#373737] hover:bg-[#000000] rounded-md text-white px-4 py-2 hover:text-white"
+                  >
+                    Bank Details
                   </button>
                 </div>
               </div>

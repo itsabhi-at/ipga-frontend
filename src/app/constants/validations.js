@@ -40,3 +40,7 @@ export function validatePassport(passportNumber) {
     return false;
   }
 }
+export const validateMobileNumber = (value) => {
+  const phoneRegex = /^\d{10}$/; // Assuming a 10-digit phone number
+  return phoneRegex.test(value);
+};
