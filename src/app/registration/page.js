@@ -549,7 +549,7 @@ function Registration() {
         isOpen={modalIsOpen}
         onRequestClose={() => setModalIsOpen(false)}
         contentLabel="Custom Modal"
-        className="custom-modal h-[60%] w-[60%] absolute top-1/2 -translate-y-1/2 left-1/2 -translate-x-1/2"
+        className="custom-modal h-[60%] w-[80%] md:w-[60%] absolute top-1/2 -translate-y-1/2 left-1/2 -translate-x-1/2"
         // style={customStyles}
         overlayClassName={"product-modal"}
         ariaHideApp={false}
