@@ -21,6 +21,7 @@ function Login() {
     if (name === "password") setPassword(value);
   };
   const handleSignUp = async (e) => {
+    router.push("/registration");
     e.preventDefault();
     await signUpCall({
       url: "",
@@ -38,6 +39,7 @@ function Login() {
       .catch((e) => toast.error(e?.message));
   };
   const handleLogin = async (e) => {
+    router.push("/registration");
     e.preventDefault();
     await loginCall({
       url: "",

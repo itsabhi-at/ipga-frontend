@@ -200,14 +200,98 @@ function Landing() {
           <p>
             <br />
           </p>
-          <ul>
-            <li>
-              <strong>PRIVACY POLICY:&nbsp;</strong>
-              <ul>
-                <li>Please click here to read our Privacy Policy.</li>
-              </ul>
-            </li>
-          </ul>
+          <p>
+            <strong>PRIVACY POLICY</strong>
+          </p>
+          <p>
+            <br />
+          </p>
+          <p>
+            This privacy policy sets out how INDIA PULSES AND GRAINS ASSOCIATION
+            (IPGA) uses and protects any information that you give IPGA when you
+            use this website. IPGA is committed to ensuring that your privacy is
+            protected. Should we ask you to provide certain information by which
+            you can be identified when using this website, then you can be
+            assured that it will only be used in accordance with this privacy
+            statement.
+          </p>
+          <p>
+            <br />
+          </p>
+          <p>
+            IPGA may change this policy from time to time by updating this page.
+            You should check this page from time to time to ensure that you are
+            happy with any changes. This policy is effective from May 20th
+            <sup>,</sup> 2024.&nbsp;
+          </p>
+          <p>
+            <br />
+          </p>
+          <p>
+            We may collect information like name and job title, contact
+            information including email address, demographic information such as
+            postcode, preferences and interests as well as other relevant
+            information. This information is required to understand your needs
+            and provide you with a better service.&nbsp;
+          </p>
+          <p>
+            <br />
+          </p>
+          <p>
+            We may use this data to periodically send promotional email about
+            new products, special offers or other information which we think you
+            may find interesting using the email address which you have
+            provided. From time to time, we may also use your information to
+            contact you for market research purposes and may contact you by
+            email, phone or mail. We may provide your information to our
+            registered patrons for networking purposes. We will never sell your
+            information.
+          </p>
+          <p>
+            <br />
+          </p>
+          <p>
+            <strong>SECURITY&nbsp;</strong>
+          </p>
+          <p>
+            We are committed to ensuring that your information is secure. In
+            order to prevent unauthorized access or disclosure we have put in
+            place suitable physical, electronic and managerial procedures to
+            safeguard and secure the information we collect online.
+          </p>
+          <p>
+            <br />
+          </p>
+          <p>
+            Our website may contain links to enable you to visit other websites
+            of interest easily. However, once you have used these links to leave
+            our site, you should note that we do not have any control over that
+            other website. Therefore, we cannot be responsible for the
+            protection and privacy of any information which you provide whilst
+            visiting such sites and such sites are not governed by this privacy
+            statement. You should exercise caution and look at the privacy
+            statement applicable to the website in question.
+          </p>
+          <p>
+            <br />
+          </p>
+          <p>
+            We will not sell, distribute or lease your personal information to
+            third parties unless we have your permission or are required by law.
+            We may use your personal information to send you promotional
+            information about third parties which we think you may find
+            interesting.&nbsp;
+          </p>
+          <p>
+            <br />
+          </p>
+          <p>
+            If you believe that any information we are holding on you is
+            incorrect or incomplete, please write to or email us as soon as
+            possible. We will promptly correct any information found to be
+            incorrect.&nbsp;
+          </p>
+
           <div className="w-full flex justify-center items-center">
             <button
               onClick={() => router.push("/login")}

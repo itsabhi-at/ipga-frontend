@@ -636,7 +636,7 @@ function Registration() {
                     onClick={() => {}}
                     className="bg-[#373737] hover:bg-[#000000] rounded-md text-white px-4 py-2 hover:text-white"
                   >
-                    Bank Details
+                    Bank Transfer
                   </button>
                 </div>
               </div>
