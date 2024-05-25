@@ -268,19 +268,9 @@ function Registration() {
             </button>
           </div>
 
-          <div className="flex items-center justify-center">
-            <Image
-              src={circle}
-              height={100}
-              width={100}
-              alt="circle"
-              className="md:hidden block"
-            />
-          </div>
-
-          <div className="h-full max-h-[84vh] w-full flex items-center justify-center">
+          <div className="h-full max-h-[70vh] md:max-h-[84vh] w-full md:flex items-center justify-center overflow-auto my-4 md:my-0">
             {!modalIsOpen && (
-              <div className="bg-white bg-opacity-70 h-[80%] w-[50%] overflow-auto rounded-lg p-4 text-black">
+              <div className="bg-white bg-opacity-70 md:h-[80%] md:w-[50%] rounded-lg p-4 text-black">
                 <div className="w-full flex flex-col justify-center items-center">
                   <h1 className="text-2xl text-black font-medium">Welcome</h1>
                   <p className=" text-black py-4">

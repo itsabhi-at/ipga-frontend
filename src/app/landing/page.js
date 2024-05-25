@@ -131,7 +131,7 @@ function Landing() {
             <li>
               All Group Bookings{" "}
               <strong>
-                <em>(more than three delegates from the same organization)</em>
+                <em>(more than five delegates from the same organization)</em>
               </strong>{" "}
               will be handled offline. Please connect with IPGA Team at{" "}
               <a href="mailto:bds2024@ipga.co.in">bds2024@ipga.co.in</a> to
