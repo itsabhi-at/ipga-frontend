@@ -20,7 +20,7 @@ export const universalApi = createApi({
     postCallWithoutAuth: builder.mutation({
       query: ({ url, body }) => {
         return {
-          url: `${baseUrl}${url}`,
+          url: `${url}`,
           method: "POST",
           body: body,
         };
@@ -40,8 +40,20 @@ export const universalApi = createApi({
     postCallWithAuth: builder.mutation({
       query: ({ url, body, accessToken }) => {
         return {
-          url: `${baseUrl}${url}`,
+          url: `${url}`,
           method: "POST",
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+          },
+          body: body,
+        };
+      },
+    }),
+    putCallWithAuth: builder.mutation({
+      query: ({ url, body, accessToken }) => {
+        return {
+          url: `${url}`,
+          method: "PUT",
           headers: {
             Authorization: `Bearer ${accessToken}`,
           },
@@ -59,4 +71,5 @@ export const {
   usePostCallWithoutAuthMutation,
   useGetCallWithAuthMutation,
   usePostCallWithAuthMutation,
+  usePutCallWithAuthMutation,
 } = universalApi;

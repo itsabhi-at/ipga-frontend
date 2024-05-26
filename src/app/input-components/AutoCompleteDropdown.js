@@ -1,9 +1,10 @@
 "use client";
 import React, { useEffect, useRef, useState } from "react";
 import { AiOutlineCaretDown } from "react-icons/ai";
-import { toast } from "react-toastify";
+
 import Image from "next/image";
 import { useGetCallWithAuthMutation } from "../services/universalApi";
+import toast from "react-hot-toast";
 
 const AutoCompleteDropdown = ({
   labelText,
@@ -79,7 +80,7 @@ const AutoCompleteDropdown = ({
   };
   const getDataOnChange = async (value) => {
     await getCallMutation({
-      endPoint,
+      url: `${endPoint}?search=${value}`,
       accessToken,
     })
       .unwrap()
@@ -90,14 +91,14 @@ const AutoCompleteDropdown = ({
           toast.error(res.message);
         }
       })
-      .catch((e) => toast.error(e.message));
+      .catch((e) => toast.error(e.error));
   };
   useEffect(() => {
     onInitialization(inputValue);
   }, [inputValue]);
   useEffect(() => {
-    getDataOnChange();
-  }, []);
+    getDataOnChange(inputValue);
+  }, [inputValue]);
   useEffect(() => {
     setInputValue(initialSelected);
   }, [initialSelected]);
@@ -114,14 +115,14 @@ const AutoCompleteDropdown = ({
               : ""
           }`,
         }}
-        className="text-[14px] text-white"
+        className="text-black text-[14px] block"
       >
         {labelText}
         {isFieldRequired ? <span className="tertiary-color-text">*</span> : ""}
       </label>
       <div className="relative">
         <input
-          className={`w-full border border-[#FCFCFC29] border-opacity-20 bg-[#FCFCFC29] bg-opacity-20 p-4 pl-12 rounded-lg outline-none text-white text-sm placeholder:text-[#FCFCFC66] placeholder:text-opacity-40 ${
+          className={`p-2 pl-10 outline-none border border-gray-300 rounded-md mb-2 w-full text-[15px] text-black ${
             isSubmitted &&
             !validationFunctionName(inputValue) &&
             isFieldRequired
@@ -137,9 +138,9 @@ const AutoCompleteDropdown = ({
           placeholder="Search..."
         />
         <Image
-          height={28}
-          width={28}
-          className="absolute left-3 top-3 h-7 w-7"
+          className="absolute left-[12px] top-[10px]"
+          height={12}
+          width={16}
           src={placeholderImage}
           alt={""}
         />
@@ -157,10 +158,10 @@ const AutoCompleteDropdown = ({
         </p>
       )} */}
 
-      <AiOutlineCaretDown className="absolute top-3 right-2" />
+      <AiOutlineCaretDown className="absolute top-8 right-2" />
       {openSuggestion &&
         (suggestions.length > 0 ? (
-          <ul className="overflow-auto absolute z-20 top-20 left-0 max-h-40 rounded-b-md bg-[#fff]  text-sm border-2 border-opacity-30 border-[#EE3524] w-full">
+          <ul className="overflow-auto absolute z-20 top-16 left-0 max-h-40 rounded-b-md bg-[#fff]  text-sm border-2 border-opacity-30 border-[#EE3524] w-full">
             {suggestions.map((option) => (
               <li
                 key={option.id}
@@ -172,7 +173,7 @@ const AutoCompleteDropdown = ({
             ))}
           </ul>
         ) : (
-          <ul className="absolute z-20 top-20 left-0 max-h-40 overflow-auto rounded-b-md bg-[#fff]  text-sm border-2 border-opacity-30 border-[#EE3524] w-full">
+          <ul className="absolute z-20 top-16 left-0 max-h-40 overflow-auto rounded-b-md bg-[#fff]  text-sm border-2 border-opacity-30 border-[#EE3524] w-full">
             <li
               className="text-[14px] font-light  text-[#0B1525] p-2 hover:bg-red-300 focus:bg-red-300 cursor-pointer "
               onClick={() => {

@@ -30,8 +30,7 @@ export function validateAadhar(aadharNumber) {
   }
 }
 export function validatePassport(passportNumber) {
-  // Regular expression to check if the input is a valid Indian passport number
-  const passportRegex = /^(?!^0+$)[a-zA-Z0-9]{3,20}$/;
+  const passportRegex = /^[A-Z][0-9]{7}$/i;
 
   // Test the input against the regex
   if (passportRegex.test(passportNumber)) {

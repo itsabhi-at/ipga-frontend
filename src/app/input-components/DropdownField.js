@@ -60,7 +60,7 @@ const DropdownField = ({
               setIfInvalid(false);
             }
           }}
-          className={` first:text-[#9CA3AF] p-2 pl-9 outline-none border border-gray-300 rounded-md mb-2 w-full text-[15px] text-black ${
+          className={` first:text-[#000000] p-2 pl-9 outline-none border border-gray-300 rounded-md mb-2 w-full text-[15px] text-black ${
             (isSubmitted &&
               !validationFunctionName(value) &&
               isFieldRequired) ||

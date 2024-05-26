@@ -1,12 +1,16 @@
 "use client";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { FcCheckmark, FcGoogle } from "react-icons/fc";
 import circle from "@/app/assets/circle.png";
 import toast from "react-hot-toast";
 import { useRouter } from "next/navigation";
-import { usePostCallWithoutAuthMutation } from "@/app/services/universalApi";
+import {
+  usePostCallWithAuthMutation,
+  usePostCallWithoutAuthMutation,
+  usePutCallWithAuthMutation,
+} from "@/app/services/universalApi";
 import fIcon from "@/app/assets/profile.svg";
 import mail from "@/app/assets/mail.svg";
 import Modal from "react-modal";
@@ -27,6 +31,7 @@ import TextInputField from "../input-components/TextInputField";
 import EmailInputField from "../input-components/EmailInputField";
 import FileInputField from "../input-components/FileInputField";
 import NumberInputField from "../input-components/NumberInputField";
+import AutoCompleteDropdown from "../input-components/AutoCompleteDropdown";
 function Registration() {
   const router = useRouter();
   // mutations here
@@ -73,6 +78,9 @@ function Registration() {
     }
   };
   // useEffect here
+  const [acceptTnc, setAcceptTnc] = useState(false);
+  const [isIndian, setIsIndian] = useState(true);
+  const [title, setTitle] = useState("");
   const [gender, setGender] = useState("");
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
@@ -91,17 +99,32 @@ function Registration() {
   const [phone, setPhone] = useState("");
   const [businessPhone, setBusinessPhone] = useState("");
   const [mobile, setMobile] = useState("");
+  const [pincode, setPincode] = useState("");
+  const [city, setCity] = useState("");
+  const [state, setState] = useState("");
+  const [primaryPincode, setPrimaryPincode] = useState("");
+  const [primaryAddress, setPrimaryAddress] = useState("");
+  const [primaryCity, setPrimaryCity] = useState("");
+  const [primaryState, setPrimaryState] = useState("");
+  const [addressCheck, setAddressCheck] = useState(true);
+  const [country, setCountry] = useState({ id: 1, name: "India" });
   const [isFormSubmitted, setIsFormSubmitted] = useState(false);
   const [formOneSubmitted, setFormOneSubmitted] = useState(false);
   const [formTwoSubmitted, setFormTwoSubmitted] = useState(false);
   const [modalIsOpen, setModalIsOpen] = useState(false);
+  const [tncModalIsOpen, setTncModalIsOpen] = useState(false);
   const [delegateCode, setDelegateCode] = useState("");
   const [isCodeValid, setIsCodeValid] = useState(false);
 
-  const handleInputChange = (event) => {
-    const { name, value } = event.target;
+  const [postCallMutation] = usePostCallWithAuthMutation();
+  const [putCallMutation] = usePutCallWithAuthMutation();
 
+  const handleInputChange = (event, id, country) => {
+    const { name, value } = event.target;
+    if (name === "acceptTnc") setAcceptTnc(event.target.checked);
+    if (name === "addressCheck") setAddressCheck(event.target.checked);
     if (name === "delegateCode") setDelegateCode(value);
+    if (name === "title") setTitle(value);
     if (name === "gender") setGender(value);
     if (name === "firstName") setFirstName(value);
     if (name === "lastName") setLastName(value);
@@ -149,13 +172,34 @@ function Registration() {
         reader.readAsDataURL(file);
       }
     }
-    if (name === "address") setAddress(value);
+
     if (name === "phone") setPhone(value);
     if (name === "businessPhone") setBusinessPhone(value);
     if (name === "mobile") setMobile(value);
+    if (name === "pincode") setPincode(value);
+    if (name === "address") setAddress(value);
+    if (name === "city") setCity(value);
+    if (name === "state") setState(value);
+    if (name === "primaryPincode") setPrimaryPincode(value);
+    if (name === "primaryAddress") setPrimaryAddress(value);
+    if (name === "primaryCity") setPrimaryCity(value);
+    if (name === "primaryState") setPrimaryState(value);
   };
+  const handleAutoCompleteChange = (tag, name, id) => {
+    if (tag == "country") {
+      setCountry({
+        name: name,
+        id: id,
+      });
+    }
+  };
+  useEffect(() => {
+    console.log(country, isIndian);
+    country.name == "India" ? setIsIndian(true) : setIsIndian(false);
+  }, [country, isIndian]);
   const isFieldRequired = (fieldName) => {
     const requiredFields = [
+      "title",
       "gender",
       "firstName",
       "lastName",
@@ -171,6 +215,14 @@ function Registration() {
       "phone",
       "businessPhone",
       "mobile",
+      "pincode",
+      "city",
+      "state",
+      "country",
+      "primaryAddress",
+      "primaryPincode",
+      "primaryCity",
+      "primaryState",
     ];
     return requiredFields.includes(fieldName);
   };
@@ -179,6 +231,9 @@ function Registration() {
     event.preventDefault();
     setModalIsOpen(true);
     // Perform validation for each input
+
+    const isTitleValid =
+      !isFieldRequired("title") || validateDropDownField(title);
     const isGenderValid =
       !isFieldRequired("gender") || validateDropDownField(gender);
     const isFirstNameValid =
@@ -206,68 +261,116 @@ function Registration() {
       !isFieldRequired("businessPhone") || validateTextField(businessPhone);
     const isMobileValid =
       !isFieldRequired("mobile") || validateTextField(mobile);
+    const isPincodeValid =
+      !isFieldRequired("pincode") || validateTextField(pincode);
+    const isCityValid = !isFieldRequired("city") || validateTextField(city);
+    const isStateValid = !isFieldRequired("state") || validateTextField(state);
+    const isPrimaryAddressValid =
+      !isFieldRequired("primaryAddress") || validateTextField(primaryAddress);
+    const isPrimaryPincodeValid =
+      !isFieldRequired("primaryPincode") || validateTextField(primaryPincode);
+    const isPrimaryCityValid =
+      !isFieldRequired("primaryCity") || validateTextField(primaryCity);
+    const isPrimaryStateValid =
+      !isFieldRequired("primaryState") || validateTextField(primaryState);
+    const isCountryValid =
+      !isFieldRequired("country") || validateTextField(country?.name);
     // Set overall form validity
     setIsFormSubmitted(true);
 
     if (
+      isTitleValid &&
       isGenderValid &&
       isFirstNameValid &&
       isLastNameValid &&
       isOrgValid &&
       isDesignationValid &&
-      isGstUploadValid &&
-      isAadharNumberValid &&
-      isAadharUploadValid &&
-      isPassportNumberValid &&
-      isPassportUploadValid &&
-      isAddressValid &&
-      isPhoneValid &&
+      (isIndian
+        ? isGstUploadValid && isAadharNumberValid && isAadharUploadValid
+        : isPassportNumberValid && isPassportUploadValid) &&
+      // isPhoneValid &&
       isBusinessPhoneValid &&
-      isMobileValid
+      isMobileValid &&
+      isCountryValid &&
+      (addressCheck
+        ? isPrimaryAddressValid &&
+          isPrimaryPincodeValid &&
+          isPrimaryCityValid &&
+          isPrimaryStateValid &&
+          isAddressValid &&
+          isPincodeValid &&
+          isCityValid &&
+          isStateValid
+        : isAddressValid && isPincodeValid && isCityValid && isStateValid)
     ) {
-      let body = {};
+      let body = {
+        title: title,
+        first_name: firstName,
+        last_name: lastName,
+        organization: organization,
+        designation,
+        gender,
+        pincode,
+        city,
+        state,
+        country: country?.id,
+        address,
+        mobile_number: mobile,
+        business_number: businessPhone,
+        addhar_number: aadharCardNumber,
+        aadhar_image: aadharUpload,
+      };
+      console.log(title);
       console.log(gender);
       console.log(firstName);
       console.log(lastName);
       console.log(email);
       console.log(organization);
       console.log(designation);
+      console.log(country.name);
       console.log(gstUpload);
       console.log(aadharCardNumber);
       console.log(aadharUpload);
       console.log(passportNumber);
       console.log(passportUpload);
       console.log(address);
-      console.log(phone);
+      console.log(pincode);
+      console.log(city);
+      console.log(state);
       console.log(businessPhone);
       console.log(mobile);
+      console.log(primaryAddress);
+      console.log(primaryCity);
+      console.log(primaryPincode);
+      console.log(primaryState);
 
       // if (isDataFound) {
-      // make put call
-      // await putCallMutation({})
-      //   .unwrap()
-      //   .then((res) => {
-      //     if (res.status == "success") {
-      //       router.push("/onboarding/bankdetails/");
-      //     } else {
-      //       toast.error(res.message);
-      //     }
-      //   })
-      //   .catch((e) => toast.error(e.message));
+      //   // make put call
+      //   await putCallMutation({})
+      //     .unwrap()
+      //     .then((res) => {
+      //       if (res.status == "success") {
+      //         router.push("/onboarding/bankdetails/");
+      //       } else {
+      //         toast.error(res.message);
+      //       }
+      //     })
+      //     .catch((e) => toast.error(e.message));
       // } else {
       // make post call
-      // await postCallMutation({})
-      //   .unwrap()
-      //   .then((res) => {
-      //     if (res.status == "success") {
-      //       router.push("/onboarding/bankdetails/");
-      //     } else {
-      //       toast.error(res.message);
-      //     }
-      //   })
-      //   .catch((e) => toast.error(e.message));
+      await postCallMutation({})
+        .unwrap()
+        .then((res) => {
+          if (res.status == "success") {
+            router.push("/onboarding/bankdetails/");
+          } else {
+            toast.error(res.message);
+          }
+        })
+        .catch((e) => toast.error(e.message));
       // }
     } else {
+      debugger;
       console.log("Form Not Valid");
       //   if (!tnc) {
       //     toast.info("Please agree to the Terms of Service");
@@ -277,6 +380,8 @@ function Registration() {
   const handleDelegateVerification = async (event) => {
     // api call to check
   };
+
+  const handleOnIntCity = (value) => {};
   return (
     <main className="h-auto md:h-screen md:bg-white bg-[#F3F5F8] min-h-screen relative">
       <div className="md:flex h-full w-full relative z-30">
@@ -312,6 +417,26 @@ function Registration() {
                         : "opacity-100 scale-100"
                     }`}
                   >
+                    <DropdownField
+                      labelText={"Title"}
+                      placeholder={"Please Select Title"}
+                      htmlFor={"title"}
+                      name={"title"}
+                      value={title}
+                      placeholderImage={fIcon}
+                      errorMessage={"Title is required"}
+                      handleInputChange={handleInputChange}
+                      validationFunctionName={validateDropDownField}
+                      isFieldRequired={isFieldRequired("title")}
+                      options={[
+                        { label: "Mr.", value: "Mr." },
+                        { label: "Ms.", value: "Ms." },
+                        { label: "Mrs.", value: "Mrs." },
+                        { label: "Prof.", value: "Prof." },
+                        { label: "Dr.", value: "Dr." },
+                      ]}
+                      isSubmitted={isFormSubmitted}
+                    />
                     <DropdownField
                       labelText={"Gender"}
                       placeholder={"Please Select Gender"}
@@ -395,75 +520,106 @@ function Registration() {
                       isFieldRequired={isFieldRequired("designation")}
                       isSubmitted={isFormSubmitted}
                     />
-                    <FileInputField
-                      labelText={"GST No. Upload (Indian Delegates)"}
-                      placeholder={"Upload GST No."}
+                    <AutoCompleteDropdown
+                      htmlFor={"country"}
+                      labelText={"Choose Country"}
+                      endPoint={"accounts/country"}
+                      inputThree={true}
+                      initialSelected={country?.name ? country?.name : "India"}
+                      onSelect={(value, id) =>
+                        handleAutoCompleteChange("country", value, id)
+                      }
+                      onInitialization={(value) => handleOnIntCity(value)}
                       placeholderImage={fIcon}
-                      htmlFor={"gstUpload"}
-                      name={"gstUpload"}
-                      value={gstUpload}
-                      validationFunctionName={validateFileField}
-                      handleInputChange={handleInputChange}
-                      isFieldRequired={isFieldRequired("gstUpload")}
-                      photoUploaded={isGstPhotoUploaded}
+                      isFieldRequired={isFieldRequired("country")}
                       isSubmitted={isFormSubmitted}
-                      errorMessage={"Field is required"}
+                      validationFunctionName={validateTextField}
+                      errorMessage={"This field is required"}
                     />
-                    <NumberInputField
-                      labelText={"Aadhar Card Number (Indian Delegates)"}
-                      placeholder={"Enter your Aadhar Card Number"}
-                      htmlFor={"aadharCardNumber"}
-                      name={"aadharCardNumber"}
-                      value={aadharCardNumber}
-                      placeholderImage={fIcon}
-                      errorMessage={"Aadhar Card is required"}
-                      handleInputChange={handleInputChange}
-                      validationFunctionName={validateAadhar}
-                      isFieldRequired={isFieldRequired("aadharCardNumber")}
-                      isSubmitted={isFormSubmitted}
-                      maxLength={12}
-                    />
-                    <FileInputField
-                      labelText={"Aadhar Card Upload (Indian Delegates)"}
-                      placeholder={"Upload Aadhar Card"}
-                      placeholderImage={fIcon}
-                      htmlFor={"aadharUpload"}
-                      name={"aadharUpload"}
-                      value={aadharUpload}
-                      validationFunctionName={validateFileField}
-                      handleInputChange={handleInputChange}
-                      isFieldRequired={isFieldRequired("aadharUpload")}
-                      photoUploaded={isAadharUploaded}
-                      isSubmitted={isFormSubmitted}
-                      errorMessage={"Field is required"}
-                    />
-                    <NumberInputField
-                      labelText={"Passport Number (International Delegates)"}
-                      placeholder={"Enter your Passport Number"}
-                      htmlFor={"passportNumber"}
-                      name={"passportNumber"}
-                      value={passportNumber}
-                      placeholderImage={fIcon}
-                      errorMessage={"Passport Number is required"}
-                      handleInputChange={handleInputChange}
-                      validationFunctionName={validatePassport}
-                      isFieldRequired={isFieldRequired("passportNumber")}
-                      isSubmitted={isFormSubmitted}
-                    />
-                    <FileInputField
-                      labelText={"Passport Upload (International Delegates)"}
-                      placeholder={"Upload Passport"}
-                      placeholderImage={fIcon}
-                      htmlFor={"passportUpload"}
-                      name={"passportUpload"}
-                      value={passportUpload}
-                      validationFunctionName={validateFileField}
-                      handleInputChange={handleInputChange}
-                      isFieldRequired={isFieldRequired("passportUpload")}
-                      photoUploaded={isPassportUploaded}
-                      isSubmitted={isFormSubmitted}
-                      errorMessage={"Field is required"}
-                    />
+                    {isIndian ? (
+                      <>
+                        {" "}
+                        <FileInputField
+                          labelText={"GST No. Upload (Indian Delegates)"}
+                          placeholder={"Upload GST No."}
+                          placeholderImage={fIcon}
+                          htmlFor={"gstUpload"}
+                          name={"gstUpload"}
+                          value={gstUpload}
+                          validationFunctionName={validateFileField}
+                          handleInputChange={handleInputChange}
+                          isFieldRequired={isFieldRequired("gstUpload")}
+                          photoUploaded={isGstPhotoUploaded}
+                          isSubmitted={isFormSubmitted}
+                          errorMessage={"Field is required"}
+                        />
+                        <NumberInputField
+                          labelText={"Aadhar Card Number (Indian Delegates)"}
+                          placeholder={"Enter your Aadhar Card Number"}
+                          htmlFor={"aadharCardNumber"}
+                          name={"aadharCardNumber"}
+                          value={aadharCardNumber}
+                          placeholderImage={fIcon}
+                          errorMessage={"Aadhar Card is required"}
+                          handleInputChange={handleInputChange}
+                          validationFunctionName={validateAadhar}
+                          isFieldRequired={isFieldRequired("aadharCardNumber")}
+                          isSubmitted={isFormSubmitted}
+                          maxLength={12}
+                        />
+                        <FileInputField
+                          labelText={"Aadhar Card Upload (Indian Delegates)"}
+                          placeholder={"Upload Aadhar Card"}
+                          placeholderImage={fIcon}
+                          htmlFor={"aadharUpload"}
+                          name={"aadharUpload"}
+                          value={aadharUpload}
+                          validationFunctionName={validateFileField}
+                          handleInputChange={handleInputChange}
+                          isFieldRequired={isFieldRequired("aadharUpload")}
+                          photoUploaded={isAadharUploaded}
+                          isSubmitted={isFormSubmitted}
+                          errorMessage={"Field is required"}
+                        />
+                      </>
+                    ) : (
+                      <>
+                        <TextInputField
+                          labelText={
+                            "Passport Number (International Delegates)"
+                          }
+                          placeholder={"Enter your Passport Number"}
+                          htmlFor={"passportNumber"}
+                          name={"passportNumber"}
+                          value={passportNumber}
+                          placeholderImage={fIcon}
+                          errorMessage={"Passport Number is required"}
+                          handleInputChange={handleInputChange}
+                          validationFunctionName={validatePassport}
+                          isFieldRequired={isFieldRequired("passportNumber")}
+                          isSubmitted={isFormSubmitted}
+                        />
+                        <FileInputField
+                          labelText={
+                            "Passport Upload (International Delegates)"
+                          }
+                          placeholder={"Upload Passport"}
+                          placeholderImage={fIcon}
+                          htmlFor={"passportUpload"}
+                          name={"passportUpload"}
+                          value={passportUpload}
+                          validationFunctionName={validateFileField}
+                          handleInputChange={handleInputChange}
+                          isFieldRequired={isFieldRequired("passportUpload")}
+                          photoUploaded={isPassportUploaded}
+                          isSubmitted={isFormSubmitted}
+                          errorMessage={"Field is required"}
+                        />
+                      </>
+                    )}
+                    <p className="font-bold underline text-2xl mb-4">
+                      Business Address
+                    </p>
                     <TextInputField
                       labelText={"Enter your Complete Address"}
                       placeholder={"Address"}
@@ -477,7 +633,47 @@ function Registration() {
                       isFieldRequired={isFieldRequired("address")}
                       isSubmitted={isFormSubmitted}
                     />
-                    <NumberInputField
+                    <TextInputField
+                      labelText={"Enter your Pincode"}
+                      placeholder={"Pincode"}
+                      htmlFor={"pincode"}
+                      name={"pincode"}
+                      value={pincode}
+                      placeholderImage={fIcon}
+                      errorMessage={"Pincode is required"}
+                      handleInputChange={handleInputChange}
+                      validationFunctionName={validateTextField}
+                      isFieldRequired={isFieldRequired("pincode")}
+                      isSubmitted={isFormSubmitted}
+                    />
+                    <TextInputField
+                      labelText={"Enter your City"}
+                      placeholder={"City"}
+                      htmlFor={"city"}
+                      name={"city"}
+                      value={city}
+                      placeholderImage={fIcon}
+                      errorMessage={"City is required"}
+                      handleInputChange={handleInputChange}
+                      validationFunctionName={validateTextField}
+                      isFieldRequired={isFieldRequired("city")}
+                      isSubmitted={isFormSubmitted}
+                    />
+                    <TextInputField
+                      labelText={"Enter your State"}
+                      placeholder={"State"}
+                      htmlFor={"state"}
+                      name={"state"}
+                      value={state}
+                      placeholderImage={fIcon}
+                      errorMessage={"State is required"}
+                      handleInputChange={handleInputChange}
+                      validationFunctionName={validateTextField}
+                      isFieldRequired={isFieldRequired("state")}
+                      isSubmitted={isFormSubmitted}
+                    />
+
+                    {/* <NumberInputField
                       labelText={"Direct"}
                       placeholder={"Enter your Phone Number"}
                       htmlFor={"phone"}
@@ -489,9 +685,85 @@ function Registration() {
                       validationFunctionName={validateMobileNumber}
                       isFieldRequired={isFieldRequired("phone")}
                       isSubmitted={isFormSubmitted}
-                    />
+                    /> */}
+                    <div>
+                      <input
+                        checked={addressCheck}
+                        onChange={handleInputChange}
+                        type="checkbox"
+                        name="addressCheck"
+                        id="addressCheck"
+                      />
+                      <label htmlFor="addressCheck">
+                        Primary Address Same as Business Address ?
+                      </label>
+                    </div>
+
+                    {!addressCheck && (
+                      <>
+                        <p className="font-bold underline text-2xl mb-4">
+                          Primary Address
+                        </p>
+                        <TextInputField
+                          labelText={"Enter your Pincode"}
+                          placeholder={"Pincode"}
+                          htmlFor={"primaryPincode"}
+                          name={"primaryPincode"}
+                          value={primaryPincode}
+                          placeholderImage={fIcon}
+                          errorMessage={"Pincode is required"}
+                          handleInputChange={handleInputChange}
+                          validationFunctionName={validateTextField}
+                          isFieldRequired={isFieldRequired("primaryPincode")}
+                          isSubmitted={isFormSubmitted}
+                        />
+                        <TextInputField
+                          labelText={"Enter your Complete Address"}
+                          placeholder={"Primary Address"}
+                          htmlFor={"primaryAddress"}
+                          name={"primaryAddress"}
+                          value={primaryAddress}
+                          placeholderImage={fIcon}
+                          errorMessage={"Primary Address is required"}
+                          handleInputChange={handleInputChange}
+                          validationFunctionName={validateTextField}
+                          isFieldRequired={isFieldRequired("primaryAddress")}
+                          isSubmitted={isFormSubmitted}
+                        />
+                        <TextInputField
+                          labelText={"Enter your City"}
+                          placeholder={"City"}
+                          htmlFor={"primaryCity"}
+                          name={"primaryCity"}
+                          value={primaryCity}
+                          placeholderImage={fIcon}
+                          errorMessage={"City is required"}
+                          handleInputChange={handleInputChange}
+                          validationFunctionName={validateTextField}
+                          isFieldRequired={isFieldRequired("primaryCity")}
+                          isSubmitted={isFormSubmitted}
+                        />
+                        <TextInputField
+                          labelText={"Enter your State"}
+                          placeholder={"State"}
+                          htmlFor={"primaryState"}
+                          name={"primaryState"}
+                          value={primaryState}
+                          placeholderImage={fIcon}
+                          errorMessage={"State is required"}
+                          handleInputChange={handleInputChange}
+                          validationFunctionName={validateTextField}
+                          isFieldRequired={isFieldRequired("primaryState")}
+                          isSubmitted={isFormSubmitted}
+                        />
+                      </>
+                    )}
+
+                    <p className="font-bold underline text-2xl mb-4">
+                      Contact Information
+                    </p>
                     <NumberInputField
-                      labelText={"Business/Office"}
+                      labelText={"Business/Office Number"}
                       placeholder={"Enter your Business/Office Number"}
                       htmlFor={"businessPhone"}
                       name={"businessPhone"}
@@ -504,7 +776,7 @@ function Registration() {
                       isSubmitted={isFormSubmitted}
                     />
                     <NumberInputField
-                      labelText={"Mobile"}
+                      labelText={"Mobile Number"}
                       placeholder={"Enter your Mobile Number"}
                       htmlFor={"mobile"}
                       name={"mobile"}
@@ -516,6 +788,7 @@ function Registration() {
                       isFieldRequired={isFieldRequired("mobile")}
                       isSubmitted={isFormSubmitted}
                     />
+
                     <button
                       type="button"
                       onClick={handleFormSubmit}
@@ -584,15 +857,15 @@ function Registration() {
                     htmlFor="delegateCode"
                     className="text-[#000] text-[14px] block mb-2"
                   >
-                    Enter Delegate Code
+                    Please enter your Patron unique code
                   </label>
                   <input
                     name="delegateCode"
                     value={delegateCode}
                     onChange={handleInputChange}
-                    placeholder="Delegate Code If Any?"
+                    placeholder="Patron Unique code if any"
                     className="w-full p-2 outline-none border border-[#000] rounded-md mb-2 text-[15px] text-[#000] bg-transparent placeholder:text-gray-600"
-                    type="email"
+                    type="text"
                   />
                   {isCodeValid ? (
                     <p className="text-green-700 text-sm font-medium">
@@ -613,26 +886,60 @@ function Registration() {
                     Verify
                   </button>
                 </div>
-
-                <div className="flex items-center justify-end text-black font-semibold">
-                  Total Price :{"  "}
-                  {isCodeValid ? (
-                    <span className="inline-block">
-                      &nbsp;
-                      <s>3540</s> 2360
-                    </span>
+                <div className="text-black text-right">
+                  {isIndian ? (
+                    <>
+                      <p>Total Amount Excl. (INR): 3000</p>
+                      <p>GST (INR) 18%: 540</p>
+                      <p>
+                        Grand Total Incl. (INR):{" "}
+                        {isCodeValid ? (
+                          <span className="inline-block">
+                            <s>3540</s> 2360
+                          </span>
+                        ) : (
+                          "3540"
+                        )}
+                      </p>
+                    </>
                   ) : (
-                    "3540"
+                    <>
+                      <p>Total Amount Excl. (USD): 100</p>
+                      <p>GST (USD) 18%: 18</p>
+                      <p>Grand Total Incl. (USD): 118</p>
+                    </>
                   )}
                 </div>
+
+                <div className="text-right flex gap-x-2 justify-end">
+                  <input
+                    checked={acceptTnc}
+                    onChange={handleInputChange}
+                    type="checkbox"
+                    name="acceptTnc"
+                    id="acceptTnc"
+                  />
+                  <label htmlFor="acceptTnc" className="text-black">
+                    I agree to{" "}
+                    <span
+                      className="inline-block text-blue-700 underline"
+                      onClick={() => setTncModalIsOpen(true)}
+                    >
+                      Terms and Conditions
+                    </span>
+                  </label>
+                </div>
+
                 <div className="flex items-center justify-end gap-x-4 text-black font-semibold">
                   <button
+                    disabled={!acceptTnc}
                     onClick={() => {}}
                     className="bg-[#373737] hover:bg-[#000000] rounded-md text-white px-4 py-2 hover:text-white"
                   >
                     Pay Now
                   </button>
                   <button
+                    disabled={!acceptTnc}
                     onClick={() => {}}
                     className="bg-[#373737] hover:bg-[#000000] rounded-md text-white px-4 py-2 hover:text-white"
                   >
@@ -641,6 +948,351 @@ function Registration() {
                 </div>
               </div>
             </div>
+          </div>
+        </>
+      </Modal>
+      <Modal
+        isOpen={tncModalIsOpen}
+        onRequestClose={() => setTncModalIsOpen(false)}
+        contentLabel="Custom Modal"
+        className="custom-modal h-[60%] w-[80%] md:w-[60%] absolute top-1/2 -translate-y-1/2 left-1/2 -translate-x-1/2"
+        // style={customStyles}
+        overlayClassName={"product-modal"}
+        ariaHideApp={false}
+      >
+        <>
+          <div className="MODAL-BODY border border-[#fcfcfc] border-opacity-[16%] bg-[#1a1a1a]  h-[100%] overflow-x-auto w-[100%] rounded-lg py-4 px-4 space-y-2 relative">
+            <div
+              className="h-8 w-8 bg-white rounded-md flex items-center justify-center absolute right-0 top-0"
+              onClick={() => setTncModalIsOpen(false)}
+            >
+              <AiOutlineClose className="text-xl text-black" />
+            </div>
+            <main className="md:h-screen h-[90vh] min-h-screen relative z-30">
+              <div className="h-full w-full  md:pt-0 pt-6">
+                <div className="bg-white bg-opacity-70  rounded-lg p-4 text-black">
+                  <p>Dear Delegates,</p>
+                  <p>
+                    <br />
+                  </p>
+                  <p>
+                    Thank you for your interest in registering for the
+                    &lsquo;BHARAT DALHAN SEMINAR 2024&rsquo; to be held on
+                    August 9<sup>th</sup>, 2024, at&nbsp;Vigyan Bhawan, Delhi,
+                    India.&nbsp;
+                  </p>
+                  <p>
+                    <br />
+                  </p>
+                  <p>
+                    Before you proceed with the Registration, we would like to
+                    draw you attention to a few key factors and request you to
+                    please read them carefully. Please feel free to write to us
+                    at{" "}
+                    <a
+                      className="font-bold text-blue-400"
+                      href="mailto:bds2024@ipga.co.in"
+                    >
+                      bds2024@ipga.co.in
+                    </a>{" "}
+                    in case you have any queries or need any clarifications.
+                  </p>
+                  <p>
+                    <br />
+                  </p>
+                  <p>
+                    <strong>
+                      REGISTRATION FOR THE &lsquo;BHARAT DALHAN SEMINAR
+                      2024&rsquo;
+                    </strong>
+                  </p>
+                  <p>
+                    <br />
+                  </p>
+                  <p>The Registration Fees for each Delegate are as follows:</p>
+                  <p>
+                    <br />
+                  </p>
+                  <table
+                    className="border-collapse border border-black"
+                    cellSpacing="0"
+                    cellPadding="0"
+                  >
+                    <tbody>
+                      <tr>
+                        <td
+                          className="border border-black"
+                          rowspan="2"
+                          valign="middle"
+                        >
+                          <p>
+                            <br />
+                          </p>
+                        </td>
+                        <td
+                          className="border border-black"
+                          colspan="2"
+                          valign="middle"
+                        >
+                          <p>
+                            <strong>INDIAN DELEGATES (INR)</strong>
+                          </p>
+                        </td>
+                        <td className="border border-black" valign="middle">
+                          <p>
+                            <strong>INTERNATIONAL DELEGATES (USD)</strong>
+                          </p>
+                        </td>
+                      </tr>
+
+                      <tr className="">
+                        <td className="border border-black" valign="middle">
+                          <p>
+                            <strong>Patron</strong>
+                          </p>
+                        </td>
+                        <td className="border border-black" valign="middle">
+                          <p>
+                            <strong>Non Patron</strong>
+                          </p>
+                        </td>
+                        <td className="border border-black" valign="middle">
+                          <p>
+                            <strong>Per Delegate</strong>
+                          </p>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td className="border border-black" valign="middle">
+                          <p>
+                            <br />
+                          </p>
+                        </td>
+                        <td className="border border-black" valign="bottom">
+                          <p>2,000 + Tax</p>
+                        </td>
+                        <td className="border border-black" valign="bottom">
+                          <p>3,000 + Tax</p>
+                        </td>
+                        <td className="border border-black" valign="bottom">
+                          <p>100 + Tax</p>
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+
+                  <p>
+                    <br />
+                  </p>
+                  <p>
+                    <strong>GENERAL TERMS AND CONDITIONS</strong>
+                  </p>
+                  <ol>
+                    <li>
+                      Above cost exclude taxes. In the event of any change in
+                      Taxes by the Government of India, these rates will change
+                      accordingly from the date such changes are enforced by the
+                      Government of India.
+                    </li>
+                    <li>
+                      All IPGA Patrons{" "}
+                      <strong>
+                        <em>
+                          (whose patronship fees are fully paid till date)
+                        </em>
+                      </strong>{" "}
+                      shall receive UNIQUE Code on their registered email id to
+                      register for the Seminar.
+                    </li>
+                    <li>
+                      Indian Delegates who are not IPGA Patrons should use the
+                      link given below to register for the Seminar.
+                    </li>
+                    <li>
+                      All Group Bookings{" "}
+                      <strong>
+                        <em>
+                          (more than five delegates from the same organization)
+                        </em>
+                      </strong>{" "}
+                      will be handled offline. Please connect with IPGA Team at{" "}
+                      <a
+                        className="font-bold text-blue-400"
+                        href="mailto:bds2024@ipga.co.in"
+                      >
+                        bds2024@ipga.co.in
+                      </a>{" "}
+                      to complete the process.
+                    </li>
+                    <li>
+                      All International Delegates shall pay in US Dollars.
+                      International Delegates will automatically get the
+                      applicable rates once they choose the
+                      &ldquo;Country&rdquo; field in the Registration Process.
+                    </li>
+                    <li>
+                      All International Delegates MUST read the VISA APPLICATION
+                      PROCESS before proceeding to Register.
+                    </li>
+                  </ol>
+                  <ul>
+                    <li>
+                      <strong>GUIDELINES FOR REGISTRATION:</strong>
+                      <ul>
+                        <li>All fields are mandatory.</li>
+                        <li>Please tick on the relevant option.</li>
+                        <li>
+                          All IPGA Patrons (whose patronship fees are fully paid
+                          till date) shall receive UNIQUE Code on their
+                          registered email id to register for the event.
+                        </li>
+                        <li>
+                          All Group Bookings (more than five delegates from the
+                          same organization) will be handled offline. Please
+                          connect with IPGA Team at BHARAT DALHAN SEMINAR 2024{" "}
+                          <a
+                            className="font-bold text-blue-400"
+                            href="mailto:bds2024@ipga.co.in"
+                          >
+                            bds2024@ipga.co.in
+                          </a>{" "}
+                          to complete the process.
+                        </li>
+                        <li>
+                          All International Delegates MUST read the VISA
+                          APPLICATION PROCESS before proceeding to Register.
+                        </li>
+                        <li>
+                          Invoice cum Receipt bearing the Registration ID will
+                          be sent to all registered delegates by email. This
+                          must be presented at the registration counter.
+                        </li>
+                        <li>
+                          The delegates must mention their registration ID in
+                          all future correspondence.
+                        </li>
+                        <li>
+                          After receiving the confirmation e-mail, contact us
+                          immediately for any spelling errors or changes.
+                        </li>
+                      </ul>
+                    </li>
+                  </ul>
+                  <p>
+                    <br />
+                  </p>
+                  <ul>
+                    <li>
+                      <strong>CANCELLATION POLICY:</strong>
+                      <ul>
+                        <li>
+                          As mentioned on website in the Registration Tab.
+                        </li>
+                      </ul>
+                    </li>
+                  </ul>
+                  <p>
+                    <br />
+                  </p>
+                  <p>
+                    <strong>PRIVACY POLICY</strong>
+                  </p>
+                  <p>
+                    <br />
+                  </p>
+                  <p>
+                    This privacy policy sets out how INDIA PULSES AND GRAINS
+                    ASSOCIATION (IPGA) uses and protects any information that
+                    you give IPGA when you use this website. IPGA is committed
+                    to ensuring that your privacy is protected. Should we ask
+                    you to provide certain information by which you can be
+                    identified when using this website, then you can be assured
+                    that it will only be used in accordance with this privacy
+                    statement.
+                  </p>
+                  <p>
+                    <br />
+                  </p>
+                  <p>
+                    IPGA may change this policy from time to time by updating
+                    this page. You should check this page from time to time to
+                    ensure that you are happy with any changes. This policy is
+                    effective from May 20th
+                    <sup>,</sup> 2024.&nbsp;
+                  </p>
+                  <p>
+                    <br />
+                  </p>
+                  <p>
+                    We may collect information like name and job title, contact
+                    information including email address, demographic information
+                    such as postcode, preferences and interests as well as other
+                    relevant information. This information is required to
+                    understand your needs and provide you with a better
+                    service.&nbsp;
+                  </p>
+                  <p>
+                    <br />
+                  </p>
+                  <p>
+                    We may use this data to periodically send promotional email
+                    about new products, special offers or other information
+                    which we think you may find interesting using the email
+                    address which you have provided. From time to time, we may
+                    also use your information to contact you for market research
+                    purposes and may contact you by email, phone or mail. We may
+                    provide your information to our registered patrons for
+                    networking purposes. We will never sell your information.
+                  </p>
+                  <p>
+                    <br />
+                  </p>
+                  <p>
+                    <strong>SECURITY&nbsp;</strong>
+                  </p>
+                  <p>
+                    We are committed to ensuring that your information is
+                    secure. In order to prevent unauthorized access or
+                    disclosure we have put in place suitable physical,
+                    electronic and managerial procedures to safeguard and secure
+                    the information we collect online.
+                  </p>
+                  <p>
+                    <br />
+                  </p>
+                  <p>
+                    Our website may contain links to enable you to visit other
+                    websites of interest easily. However, once you have used
+                    these links to leave our site, you should note that we do
+                    not have any control over that other website. Therefore, we
+                    cannot be responsible for the protection and privacy of any
+                    information which you provide whilst visiting such sites and
+                    such sites are not governed by this privacy statement. You
+                    should exercise caution and look at the privacy statement
+                    applicable to the website in question.
+                  </p>
+                  <p>
+                    <br />
+                  </p>
+                  <p>
+                    We will not sell, distribute or lease your personal
+                    information to third parties unless we have your permission
+                    or are required by law. We may use your personal information
+                    to send you promotional information about third parties
+                    which we think you may find interesting.&nbsp;
+                  </p>
+                  <p>
+                    <br />
+                  </p>
+                  <p>
+                    If you believe that any information we are holding on you is
+                    incorrect or incomplete, please write to or email us as soon
+                    as possible. We will promptly correct any information found
+                    to be incorrect.&nbsp;
+                  </p>
+                </div>
+              </div>
+            </main>
           </div>
         </>
       </Modal>

@@ -7,6 +7,10 @@ import Modal from "react-modal";
 import { useRouter } from "next/navigation";
 import { usePostCallWithoutAuthMutation } from "../services/universalApi";
 import toast from "react-hot-toast";
+import {
+  validateEmailField,
+  validateTextField,
+} from "../constants/validations";
 function Login() {
   const router = useRouter();
   const [modalIsOpen, setModalIsOpen] = useState(false);
@@ -21,40 +25,62 @@ function Login() {
     if (name === "password") setPassword(value);
   };
   const handleSignUp = async (e) => {
-    router.push("/registration");
     e.preventDefault();
-    await signUpCall({
-      url: "",
-      body: {},
-    })
-      .unwrap()
-      .then((res) => {
-        if (res.status == "success") {
-          router.push("/registration");
-          // save access token
-        } else {
-          toast.error(res?.message);
-        }
+    const isEmailValid = validateEmailField(email);
+    const isPasswordValid = validateTextField(password);
+    if (isEmailValid && isPasswordValid) {
+      await signUpCall({
+        url: "accounts/signup",
+        body: {
+          email,
+          password,
+        },
       })
-      .catch((e) => toast.error(e?.message));
+        .unwrap()
+        .then((res) => {
+          if (res.status == "success") {
+            // router.push("/registration");
+            toast.success(res?.message);
+            setSignUpIsOpen(false);
+            // save access token
+          } else {
+            toast.error(res?.message);
+          }
+        })
+        .catch((e) => {
+          console.log(e);
+          toast.error(e?.error);
+        });
+    } else {
+      toast.error("Form Not Valid");
+    }
   };
   const handleLogin = async (e) => {
-    router.push("/registration");
     e.preventDefault();
-    await loginCall({
-      url: "",
-      body: {},
-    })
-      .unwrap()
-      .then((res) => {
-        if (res.status == "success") {
-          router.push("/registration");
-          // save access token
-        } else {
-          toast.error(res?.message);
-        }
+    const isEmailValid = validateEmailField(email);
+    const isPasswordValid = validateTextField(password);
+    if (isEmailValid && isPasswordValid) {
+      await loginCall({
+        url: "accounts/login",
+        body: {
+          email,
+          password,
+        },
       })
-      .catch((e) => toast.error(e?.message));
+        .unwrap()
+        .then((res) => {
+          if (res.status == "success") {
+            localStorage.setItem("accessToken", res.data.access);
+            router.push("/registration");
+            // save access token
+          } else {
+            toast.error(res?.message);
+          }
+        })
+        .catch((e) => toast.error(e?.error));
+    } else {
+      toast.error("Form Not Valid");
+    }
   };
   return (
     <div className="min-h-screen relative z-30">
@@ -109,7 +135,7 @@ function Login() {
               <p className="text-[18px] text-productTextColor font-medium mb-8">
                 Login
               </p>
-              <div className="w-1/2 space-y-4">
+              <div className="w-full md:w-1/2 space-y-4">
                 <div className="flex flex-col w-full">
                   <label
                     htmlFor="email"
@@ -175,7 +201,7 @@ function Login() {
               <p className="text-[18px] text-productTextColor font-medium mb-8">
                 Sign Up
               </p>
-              <div className="w-1/2 space-y-4">
+              <div className="w-full md:w-1/2 space-y-4">
                 <div className="flex flex-col w-full">
                   <label
                     htmlFor="email"

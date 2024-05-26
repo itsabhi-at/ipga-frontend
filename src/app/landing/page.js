@@ -26,8 +26,13 @@ function Landing() {
             Before you proceed with the Registration, we would like to draw you
             attention to a few key factors and request you to please read them
             carefully. Please feel free to write to us at{" "}
-            <a href="mailto:bds2024@ipga.co.in">bds2024@ipga.co.in</a> in case
-            you have any queries or need any clarifications.
+            <a
+              className="font-bold text-blue-400"
+              href="mailto:bds2024@ipga.co.in"
+            >
+              bds2024@ipga.co.in
+            </a>{" "}
+            in case you have any queries or need any clarifications.
           </p>
           <p>
             <br />
@@ -134,8 +139,13 @@ function Landing() {
                 <em>(more than five delegates from the same organization)</em>
               </strong>{" "}
               will be handled offline. Please connect with IPGA Team at{" "}
-              <a href="mailto:bds2024@ipga.co.in">bds2024@ipga.co.in</a> to
-              complete the process.
+              <a
+                className="font-bold text-blue-400"
+                href="mailto:bds2024@ipga.co.in"
+              >
+                bds2024@ipga.co.in
+              </a>{" "}
+              to complete the process.
             </li>
             <li>
               All International Delegates shall pay in US Dollars. International
@@ -160,11 +170,16 @@ function Landing() {
                   to register for the event.
                 </li>
                 <li>
-                  All Group Bookings (more than three delegates from the same
+                  All Group Bookings (more than five delegates from the same
                   organization) will be handled offline. Please connect with
                   IPGA Team at BHARAT DALHAN SEMINAR 2024{" "}
-                  <a href="mailto:bds2024@ipga.co.in">bds2024@ipga.co.in</a> to
-                  complete the process.
+                  <a
+                    className="font-bold text-blue-400"
+                    href="mailto:bds2024@ipga.co.in"
+                  >
+                    bds2024@ipga.co.in
+                  </a>{" "}
+                  to complete the process.
                 </li>
                 <li>
                   All International Delegates MUST read the VISA APPLICATION
