@@ -43,6 +43,7 @@ function FileInputField({
         </div>
         <input
           type="file"
+          accept="image/*"
           name={name}
           id={name}
           onChange={handleInputChange}
