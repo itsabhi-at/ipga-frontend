@@ -113,9 +113,9 @@ function Registration() {
   const [formTwoSubmitted, setFormTwoSubmitted] = useState(false);
   const [modalIsOpen, setModalIsOpen] = useState(false);
   const [tncModalIsOpen, setTncModalIsOpen] = useState(false);
+  const [bankTransferModal, setBankTransferModal] = useState(false);
   const [delegateCode, setDelegateCode] = useState("");
   const [isCodeValid, setIsCodeValid] = useState(false);
-
   const [postCallMutation] = usePostCallWithAuthMutation();
   const [putCallMutation] = usePutCallWithAuthMutation();
 
@@ -940,7 +940,9 @@ function Registration() {
                   </button>
                   <button
                     disabled={!acceptTnc}
-                    onClick={() => {}}
+                    onClick={() => {
+                      setBankTransferModal(true);
+                    }}
                     className="bg-[#373737] hover:bg-[#000000] rounded-md text-white px-4 py-2 hover:text-white"
                   >
                     Bank Transfer
@@ -1289,6 +1291,44 @@ function Registration() {
                     incorrect or incomplete, please write to or email us as soon
                     as possible. We will promptly correct any information found
                     to be incorrect.&nbsp;
+                  </p>
+                </div>
+              </div>
+            </main>
+          </div>
+        </>
+      </Modal>
+      <Modal
+        isOpen={bankTransferModal}
+        onRequestClose={() => setBankTransferModal(false)}
+        contentLabel="Custom Modal"
+        className="custom-modal h-[60%] w-[80%] md:w-[60%] absolute top-1/2 -translate-y-1/2 left-1/2 -translate-x-1/2"
+        // style={customStyles}
+        overlayClassName={"product-modal"}
+        ariaHideApp={false}
+      >
+        <>
+          <div className="MODAL-BODY border border-[#fcfcfc] border-opacity-[16%] bg-[#1a1a1a]  h-[100%] overflow-x-auto w-[100%] rounded-lg py-4 px-4 space-y-2 relative">
+            <div
+              className="h-8 w-8 bg-white rounded-md flex items-center justify-center absolute right-0 top-0"
+              onClick={() => setBankTransferModal(false)}
+            >
+              <AiOutlineClose className="text-xl text-black" />
+            </div>
+            <main className="h-fit relative z-30">
+              <div className="w-full  md:pt-0 pt-6">
+                <div className="bg-white bg-opacity-70 h-[30vh]  rounded-lg p-4 text-black">
+                  <p className="font-medium text-center w-full">
+                    THANK YOU FOR REGISTERING FOR BHARAT DALHAN SEMINAR 2024
+                  </p>
+                  <p className="text-center w-full mt-12">
+                    To be held on August 9th, 2024, at Vigyan Bhawan, Delhi,
+                    India Best regards, Registration Support Desk | BHARAT
+                    DALHAN SEMINAR 2024 Email ID: bds2024@ipga.co.in
+                  </p>
+                  <p className="text-sm mt-8">
+                    Please Note: You will receive all the future communications
+                    on your registered email id.
                   </p>
                 </div>
               </div>
