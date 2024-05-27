@@ -607,7 +607,7 @@ function Registration() {
                       </>
                     )}
                     <p className="font-bold underline text-2xl mb-4">
-                      Business Address
+                      Billing Address
                     </p>
                     <TextInputField
                       labelText={"Enter your Complete Address"}
