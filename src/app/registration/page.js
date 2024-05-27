@@ -32,52 +32,16 @@ import EmailInputField from "../input-components/EmailInputField";
 import FileInputField from "../input-components/FileInputField";
 import NumberInputField from "../input-components/NumberInputField";
 import AutoCompleteDropdown from "../input-components/AutoCompleteDropdown";
+import { ColorRing } from "react-loader-spinner";
 function Registration() {
   const router = useRouter();
-  // mutations here
-  const [postLoginDetails] = usePostCallWithoutAuthMutation();
-  //states here
+  let accessToken = null;
+  typeof window !== "undefined"
+    ? (accessToken = localStorage.getItem("accessToken"))
+    : null;
 
-  const [mobileNumber, setMobileNumber] = useState("");
-  const [mobileError, setMobileError] = useState(false);
-  const [password, setPassword] = useState("");
-  const [passwordError, setPasswordError] = useState(false);
-  // handlers here
-
-  const handleMobileInputChange = (e) => {
-    setMobileError(false);
-    setMobileNumber(e.target.value);
-  };
-  const handlePasswordInputChange = (e) => {
-    setPasswordError(false);
-    setPassword(e.target.value);
-  };
-  const handleLogin = async () => {
-    if (mobileNumber.length === 10 && password.length > 0) {
-      setMobileError(false);
-      setPasswordError(false);
-      postLoginDetails({
-        url: "/api/accounts/login",
-        body: {
-          mobile: mobileNumber,
-          password,
-        },
-      })
-        .then((res) => {
-          if (res.data.status == 200) {
-            router.push("/events");
-            localStorage.setItem("accessToken", res.data.data.access);
-          } else {
-            toast.error(res?.data?.message);
-          }
-        })
-        .catch((e) => toast.error("Error" + e?.statusCode));
-    } else {
-      mobileNumber.length != 10 ? setMobileError(true) : null;
-      password.length < 1 ? setPasswordError(true) : null;
-    }
-  };
   // useEffect here
+  const [formLoading, setFormLoading] = useState(false);
   const [acceptTnc, setAcceptTnc] = useState(false);
   const [isIndian, setIsIndian] = useState(true);
   const [title, setTitle] = useState("");
@@ -229,7 +193,7 @@ function Registration() {
 
   const handleFormSubmit = async (event) => {
     event.preventDefault();
-    setModalIsOpen(true);
+    setFormLoading(true);
     // Perform validation for each input
 
     const isTitleValid =
@@ -286,7 +250,7 @@ function Registration() {
       isOrgValid &&
       isDesignationValid &&
       (isIndian
-        ? isGstUploadValid && isAadharNumberValid && isAadharUploadValid
+        ? isAadharNumberValid && isAadharUploadValid
         : isPassportNumberValid && isPassportUploadValid) &&
       // isPhoneValid &&
       isBusinessPhoneValid &&
@@ -317,61 +281,63 @@ function Registration() {
         address,
         mobile_number: mobile,
         business_number: businessPhone,
-        addhar_number: aadharCardNumber,
-        aadhar_image: aadharUpload,
       };
-      console.log(title);
-      console.log(gender);
-      console.log(firstName);
-      console.log(lastName);
-      console.log(email);
-      console.log(organization);
-      console.log(designation);
-      console.log(country.name);
-      console.log(gstUpload);
-      console.log(aadharCardNumber);
-      console.log(aadharUpload);
-      console.log(passportNumber);
-      console.log(passportUpload);
-      console.log(address);
-      console.log(pincode);
-      console.log(city);
-      console.log(state);
-      console.log(businessPhone);
-      console.log(mobile);
-      console.log(primaryAddress);
-      console.log(primaryCity);
-      console.log(primaryPincode);
-      console.log(primaryState);
 
-      // if (isDataFound) {
-      //   // make put call
-      //   await putCallMutation({})
-      //     .unwrap()
-      //     .then((res) => {
-      //       if (res.status == "success") {
-      //         router.push("/onboarding/bankdetails/");
-      //       } else {
-      //         toast.error(res.message);
-      //       }
-      //     })
-      //     .catch((e) => toast.error(e.message));
-      // } else {
-      // make post call
-      await postCallMutation({})
+      if (isIndian) {
+        body = {
+          // gst_file: gstUpload,
+          addhar_number: aadharCardNumber,
+          aadhar_image: aadharUpload,
+          ...body,
+        };
+      } else {
+        body = {
+          passport_number: passportNumber,
+          passport_file: passportUpload,
+          ...body,
+        };
+      }
+      if (!addressCheck) {
+        body = {
+          is_default_address: false,
+          primary_city: primaryCity,
+          primary_address: primaryAddress,
+          primary_pincode: primaryPincode,
+          primary_state: primaryState,
+          ...body,
+        };
+      } else {
+        body = {
+          is_default_address: true,
+          ...body,
+        };
+      }
+
+      await postCallMutation({
+        url: "accounts/details",
+        body: body,
+        accessToken,
+      })
         .unwrap()
         .then((res) => {
           if (res.status == "success") {
-            router.push("/onboarding/bankdetails/");
+            setFormLoading(false);
+            setModalIsOpen(true);
           } else {
+            setFormLoading(false);
             toast.error(res.message);
           }
         })
-        .catch((e) => toast.error(e.message));
+        .catch((e) => {
+          setFormLoading(false);
+          toast.error(e.message);
+        });
       // }
     } else {
-      debugger;
+      // debugger;
+      setFormLoading(false);
       console.log("Form Not Valid");
+      toast.error("Please Fill All Fields Required");
       //   if (!tnc) {
       //     toast.info("Please agree to the Terms of Service");
       //   }
@@ -379,6 +345,28 @@ function Registration() {
   };
   const handleDelegateVerification = async (event) => {
     // api call to check
+    event.preventDefault();
+    if (delegateCode.length > 0) {
+      await postCallMutation({
+        url: "accounts/check-membership",
+        body: {
+          code: delegateCode,
+        },
+        accessToken,
+      })
+        .unwrap()
+        .then((res) => {
+          if (res.status == "success") {
+            setIsCodeValid(res?.data.is_membership);
+            toast.success(res?.message);
+          } else {
+            toast.error(res.message);
+          }
+        })
+        .catch((e) => toast.error(e.message));
+    } else {
+      toast.error("Code Cannot Be Empty");
+    }
   };
 
   const handleOnIntCity = (value) => {};
@@ -388,12 +376,13 @@ function Registration() {
         <div className="flex-1 w-full h-full bg-transparent p-4 flex flex-col ">
           <div className="flex items-center justify-between">
             <div className="flex gap-2 items-center">
-              <div className="h-4 w-4 rounded-full bg-black"></div>
-              <h1 className="text-white font-medium">IPGA UI</h1>
+              <div className="h-4 w-4 rounded-full bg-gray-400"></div>
+              <h1 className="text-white font-medium">BDS 2024</h1>
             </div>
             <button
               onClick={() => {
-                // router.push("/");
+                localStorage.clear();
+                router.push("/");
               }}
               className="bg-[#373737] hover:bg-[#000000] rounded-md text-white px-4 py-2 hover:text-white"
             >
@@ -539,7 +528,7 @@ function Registration() {
                     {isIndian ? (
                       <>
                         {" "}
-                        <FileInputField
+                        {/* <FileInputField
                           labelText={"GST No. Upload (Indian Delegates)"}
                           placeholder={"Upload GST No."}
                           placeholderImage={fIcon}
@@ -552,7 +541,7 @@ function Registration() {
                           photoUploaded={isGstPhotoUploaded}
                           isSubmitted={isFormSubmitted}
                           errorMessage={"Field is required"}
-                        />
+                        /> */}
                         <NumberInputField
                           labelText={"Aadhar Card Number (Indian Delegates)"}
                           placeholder={"Enter your Aadhar Card Number"}
@@ -633,7 +622,7 @@ function Registration() {
                       isFieldRequired={isFieldRequired("address")}
                       isSubmitted={isFormSubmitted}
                     />
-                    <TextInputField
+                    <NumberInputField
                       labelText={"Enter your Pincode"}
                       placeholder={"Pincode"}
                       htmlFor={"pincode"}
@@ -645,6 +634,7 @@ function Registration() {
                       validationFunctionName={validateTextField}
                       isFieldRequired={isFieldRequired("pincode")}
                       isSubmitted={isFormSubmitted}
+                      maxLength={6}
                     />
                     <TextInputField
                       labelText={"Enter your City"}
@@ -704,7 +694,7 @@ function Registration() {
                         <p className="font-bold underline text-2xl mb-4">
                           Primary Address
                         </p>
-                        <TextInputField
+                        <NumberInputField
                           labelText={"Enter your Pincode"}
                           placeholder={"Pincode"}
                           htmlFor={"primaryPincode"}
@@ -716,6 +706,7 @@ function Registration() {
                           validationFunctionName={validateTextField}
                           isFieldRequired={isFieldRequired("primaryPincode")}
                           isSubmitted={isFormSubmitted}
+                          maxLength={6}
                         />
                         <TextInputField
                           labelText={"Enter your Complete Address"}
@@ -759,7 +750,7 @@ function Registration() {
                       </>
                     )}
 
-                    <p className="font-bold underline text-2xl mb-4">
+                    <p className="font-bold underline text-2xl my-4">
                       Contact Information
                     </p>
                     <NumberInputField
@@ -788,14 +779,33 @@ function Registration() {
                       isFieldRequired={isFieldRequired("mobile")}
                       isSubmitted={isFormSubmitted}
                     />
-
-                    <button
-                      type="button"
-                      onClick={handleFormSubmit}
-                      className="w-full bg-[#404a3d] text-white rounded-md py-2 my-4 font-medium text-sm"
-                    >
-                      Next
-                    </button>
+                    {formLoading ? (
+                      <div className="flex items-center justify-center">
+                        <ColorRing
+                          visible={true}
+                          height="60"
+                          width="60"
+                          ariaLabel="color-ring-loading"
+                          wrapperStyle={{}}
+                          wrapperClass="color-ring-wrapper"
+                          colors={[
+                            "#000000",
+                            "#000000",
+                            "#000000",
+                            "#000000",
+                            "#000000",
+                          ]}
+                        />
+                      </div>
+                    ) : (
+                      <button
+                        type="button"
+                        onClick={handleFormSubmit}
+                        className="w-full bg-[#404a3d] text-white rounded-md py-2 my-4 font-medium text-sm"
+                      >
+                        Next
+                      </button>
+                    )}
 
                     {/* <button className="w-full bg-white rounded-md py-2 mb-4 border border-gray-500 text-gray-500 font-medium flex items-center justify-center gap-4 text-sm">
                   <FcGoogle />
@@ -816,7 +826,9 @@ function Registration() {
 
           <div className="flex gap-2 items-center">
             <div className="h-2 w-2 rounded-full bg-gray-400"></div>
-            <h1 className=" text-gray-400 font-medium text-sm my-2">IPGA</h1>
+            <h1 className=" text-gray-400 font-medium text-sm my-2">
+              BDS 2024
+            </h1>
           </div>
         </div>
         {/* <div className="flex-1 w-full h-full md:flex hidden bg-[#F3F5F8]  items-center justify-center relative">
@@ -834,19 +846,19 @@ function Registration() {
         isOpen={modalIsOpen}
         onRequestClose={() => setModalIsOpen(false)}
         contentLabel="Custom Modal"
-        className="custom-modal h-[60%] w-[80%] md:w-[60%] absolute top-1/2 -translate-y-1/2 left-1/2 -translate-x-1/2"
+        className="h-[60%] w-[80%] pointer-events-auto md:w-[60%] absolute top-1/2 -translate-y-1/2 left-1/2 -translate-x-1/2"
         // style={customStyles}
-        overlayClassName={"product-modal"}
+        overlayClassName={"delegate-modal"}
         ariaHideApp={false}
       >
         <>
           <div className="MODAL-BODY border border-[#fcfcfc] border-opacity-[16%] bg-white bg-opacity-70  h-[100%] overflow-x-auto w-[100%] rounded-lg py-4 px-4 space-y-2 relative">
-            <div
+            {/* <div
               className="h-8 w-8 bg-white rounded-md flex items-center justify-center absolute right-0 top-0"
               onClick={() => setModalIsOpen(false)}
             >
               <AiOutlineClose className="text-xl text-black" />
-            </div>
+            </div> */}
             <div className="flex flex-col w-full items-center justify-center">
               <p className="text-[18px] text-black font-medium mb-8">
                 Delegate
@@ -877,7 +889,7 @@ function Registration() {
                   ) : null}
                 </div>
 
-                <div className="flex items-end justify-end">
+                <div className="flex items-end justify-center items-center">
                   <button
                     type="button"
                     onClick={handleDelegateVerification}
@@ -886,7 +898,7 @@ function Registration() {
                     Verify
                   </button>
                 </div>
-                <div className="text-black text-right">
+                <div className="text-black text-center">
                   {isIndian ? (
                     <>
                       <p>Total Amount Excl. (INR): 3000</p>
@@ -911,7 +923,7 @@ function Registration() {
                   )}
                 </div>
 
-                <div className="text-right flex gap-x-2 justify-end">
+                <div className="text-right flex gap-x-2 justify-center">
                   <input
                     checked={acceptTnc}
                     onChange={handleInputChange}
@@ -930,7 +942,7 @@ function Registration() {
                   </label>
                 </div>
 
-                <div className="flex items-center justify-end gap-x-4 text-black font-semibold">
+                <div className="flex items-center justify-center gap-x-4 text-black font-semibold">
                   <button
                     disabled={!acceptTnc}
                     onClick={() => {}}

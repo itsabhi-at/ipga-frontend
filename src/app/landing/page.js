@@ -27,7 +27,7 @@ function Landing() {
             attention to a few key factors and request you to please read them
             carefully. Please feel free to write to us at{" "}
             <a
-              className="font-bold text-blue-400"
+              className="font-bold text-blue-700"
               href="mailto:bds2024@ipga.co.in"
             >
               bds2024@ipga.co.in
@@ -140,7 +140,7 @@ function Landing() {
               </strong>{" "}
               will be handled offline. Please connect with IPGA Team at{" "}
               <a
-                className="font-bold text-blue-400"
+                className="font-bold text-blue-700"
                 href="mailto:bds2024@ipga.co.in"
               >
                 bds2024@ipga.co.in
@@ -174,7 +174,7 @@ function Landing() {
                   organization) will be handled offline. Please connect with
                   IPGA Team at BHARAT DALHAN SEMINAR 2024{" "}
                   <a
-                    className="font-bold text-blue-400"
+                    className="font-bold text-blue-700"
                     href="mailto:bds2024@ipga.co.in"
                   >
                     bds2024@ipga.co.in

@@ -70,6 +70,12 @@ ul {
   inset: 0;
   background-color: rgba(0, 0, 0, 0) !important;
 }
+.delegate-modal {
+  /* pointer-events: none; */
+  position: fixed;
+  inset: 0;
+  background-color: rgba(0, 0, 0, 0) !important;
+}
 .lsm-modal {
   position: fixed;
   inset: 0;
