@@ -676,7 +676,7 @@ function Registration() {
                       isFieldRequired={isFieldRequired("phone")}
                       isSubmitted={isFormSubmitted}
                     /> */}
-                    <div>
+                    <div className="hidden">
                       <input
                         checked={addressCheck}
                         onChange={handleInputChange}
