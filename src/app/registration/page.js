@@ -1338,7 +1338,7 @@ function Registration() {
                     India Best regards, Registration Support Desk | BHARAT
                     DALHAN SEMINAR 2024 Email ID: bds2024@ipga.co.in
                   </p>
-                  <p className="text-sm mt-8">
+                  <p className="text-sm w-full text-center mt-8">
                     Please Note: You will receive all the future communications
                     on your registered email id.
                   </p>
