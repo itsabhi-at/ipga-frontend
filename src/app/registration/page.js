@@ -256,7 +256,7 @@ function Registration() {
       isBusinessPhoneValid &&
       isMobileValid &&
       isCountryValid &&
-      (addressCheck
+      (!addressCheck
         ? isPrimaryAddressValid &&
           isPrimaryPincodeValid &&
           isPrimaryCityValid &&
@@ -334,7 +334,7 @@ function Registration() {
         });
       // }
     } else {
-      // debugger;
+      debugger;
       setFormLoading(false);
       console.log("Form Not Valid");
       toast.error("Please Fill All Fields Required");
