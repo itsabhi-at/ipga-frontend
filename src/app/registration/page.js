@@ -334,7 +334,6 @@ function Registration() {
         });
       // }
     } else {
-      debugger;
       setFormLoading(false);
       console.log("Form Not Valid");
       toast.error("Please Fill All Fields Required");
@@ -970,9 +969,7 @@ function Registration() {
                   </button>
                   <button
                     disabled={!acceptTnc}
-                    onClick={() => {
-                      handleBankTransfer();
-                    }}
+                    onClick={handleBankTransfer}
                     className="bg-[#373737] hover:bg-[#000000] rounded-md text-white px-4 py-2 hover:text-white"
                   >
                     Bank Transfer
