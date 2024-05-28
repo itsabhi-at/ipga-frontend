@@ -95,19 +95,20 @@ function Registration() {
     if (name === "email") setEmail(value);
     if (name === "organization") setOrganization(value);
     if (name === "designation") setDesignation(value);
-    if (name === "gstUpload") {
-      setIsGstPhotoUploaded(true);
-      // setAadharFront(event.target.files[0]);
-      const file = event.target.files[0];
-      if (file) {
-        const reader = new FileReader();
-        reader.onload = function (e) {
-          const base64WithoutPrefix = e.target.result;
-          setGstUpload(base64WithoutPrefix);
-        };
-        reader.readAsDataURL(file);
-      }
-    }
+    if (name === "gstUpload") setGstUpload(value);
+    // if (name === "gstUpload") {
+    //   setIsGstPhotoUploaded(true);
+    //   // setAadharFront(event.target.files[0]);
+    //   const file = event.target.files[0];
+    //   if (file) {
+    //     const reader = new FileReader();
+    //     reader.onload = function (e) {
+    //       const base64WithoutPrefix = e.target.result;
+    //       setGstUpload(base64WithoutPrefix);
+    //     };
+    //     reader.readAsDataURL(file);
+    //   }
+    // }
     if (name === "aadharCardNumber") setAadharCardNumber(value);
     if (name === "aadharUpload") {
       setIsAadharUploaded(true);
@@ -170,7 +171,7 @@ function Registration() {
       "email",
       "organization",
       "designation",
-      "gstUpload",
+      // "gstUpload",
       "aadharCardNumber",
       "aadharUpload",
       "passportNumber",
@@ -209,7 +210,7 @@ function Registration() {
     const isDesignationValid =
       !isFieldRequired("designation") || validateTextField(designation);
     const isGstUploadValid =
-      !isFieldRequired("gstUpload") || validateFileField(gstUpload);
+      !isFieldRequired("gstUpload") || validateTextField(gstUpload);
     const isAadharNumberValid =
       !isFieldRequired("aadharCardNumber") || validateAadhar(aadharCardNumber);
     const isAadharUploadValid =
@@ -285,7 +286,7 @@ function Registration() {
 
       if (isIndian) {
         body = {
-          // gst_file: gstUpload,
+          gst_number: gstUpload,
           addhar_number: aadharCardNumber,
           aadhar_image: aadharUpload,
           ...body,
@@ -528,20 +529,19 @@ function Registration() {
                     {isIndian ? (
                       <>
                         {" "}
-                        {/* <FileInputField
+                        <TextInputField
                           labelText={"GST No. Upload (Indian Delegates)"}
                           placeholder={"Upload GST No."}
                           placeholderImage={fIcon}
                           htmlFor={"gstUpload"}
                           name={"gstUpload"}
                           value={gstUpload}
-                          validationFunctionName={validateFileField}
+                          validationFunctionName={validateTextField}
                           handleInputChange={handleInputChange}
                           isFieldRequired={isFieldRequired("gstUpload")}
-                          photoUploaded={isGstPhotoUploaded}
                           isSubmitted={isFormSubmitted}
                           errorMessage={"Field is required"}
-                        /> */}
+                        />
                         <NumberInputField
                           labelText={"Aadhar Card Number (Indian Delegates)"}
                           placeholder={"Enter your Aadhar Card Number"}
