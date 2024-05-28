@@ -17,7 +17,7 @@ function Landing() {
           <p>
             Thank you for your interest in registering for the &lsquo;BHARAT
             DALHAN SEMINAR 2024&rsquo; to be held on August 9<sup>th</sup>,
-            2024, at&nbsp;Vigyan Bhawan, Delhi, India.&nbsp;
+            2024, at&nbsp;Vigyan Bhawan, New Delhi, India.&nbsp;
           </p>
           <p>
             <br />

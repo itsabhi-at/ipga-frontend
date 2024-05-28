@@ -30,14 +30,15 @@ export function validateAadhar(aadharNumber) {
   }
 }
 export function validatePassport(passportNumber) {
-  const passportRegex = /^[A-Z][0-9]{7}$/i;
+  // const passportRegex = /^[A-Z][0-9]{7}$/i;
 
-  // Test the input against the regex
-  if (passportRegex.test(passportNumber)) {
-    return true;
-  } else {
-    return false;
-  }
+  // // Test the input against the regex
+  // if (passportRegex.test(passportNumber)) {
+  //   return true;
+  // } else {
+  //   return false;
+  // }
+  return passportNumber.trim().length > 0;
 }
 export const validateMobileNumber = (value) => {
   const phoneRegex = /^\d{10}$/; // Assuming a 10-digit phone number

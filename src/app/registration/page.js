@@ -1012,8 +1012,8 @@ function Registration() {
                   <p>
                     Thank you for your interest in registering for the
                     &lsquo;BHARAT DALHAN SEMINAR 2024&rsquo; to be held on
-                    August 9<sup>th</sup>, 2024, at&nbsp;Vigyan Bhawan, Delhi,
-                    India.&nbsp;
+                    August 9<sup>th</sup>, 2024, at&nbsp;Vigyan Bhawan, New
+                    Delhi, India.&nbsp;
                   </p>
                   <p>
                     <br />
@@ -1354,7 +1354,7 @@ function Registration() {
                     THANK YOU FOR REGISTERING FOR BHARAT DALHAN SEMINAR 2024
                   </p>
                   <p className="text-center w-full mt-12">
-                    To be held on August 9th, 2024, at Vigyan Bhawan, Delhi,
+                    To be held on August 9th, 2024, at Vigyan Bhawan, New Delhi,
                     India Best regards, Registration Support Desk | BHARAT
                     DALHAN SEMINAR 2024 Email ID: bds2024@ipga.co.in
                   </p>
