@@ -159,7 +159,6 @@ function Registration() {
     }
   };
   useEffect(() => {
-    console.log(country, isIndian);
     country.name == "India" ? setIsIndian(true) : setIsIndian(false);
   }, [country, isIndian]);
   const isFieldRequired = (fieldName) => {
@@ -369,7 +368,26 @@ function Registration() {
       toast.error("Code Cannot Be Empty");
     }
   };
-
+  const handleBankTransfer = async () => {
+    await postCallMutation({
+      url: "accounts/bank-transfer",
+      body: {
+        amount: isIndian ? (isCodeValid ? 2360 : 3540) : 110,
+      },
+      accessToken,
+    })
+      .unwrap()
+      .then((res) => {
+        if (res.status == "success") {
+          setBankTransferModal(true);
+        } else {
+          toast.error(res.message);
+        }
+      })
+      .catch((e) => {
+        toast.error(e.message);
+      });
+  };
   const handleOnIntCity = (value) => {};
   return (
     <main className="h-auto md:h-screen md:bg-white bg-[#F3F5F8] min-h-screen relative">
@@ -953,7 +971,7 @@ function Registration() {
                   <button
                     disabled={!acceptTnc}
                     onClick={() => {
-                      setBankTransferModal(true);
+                      handleBankTransfer();
                     }}
                     className="bg-[#373737] hover:bg-[#000000] rounded-md text-white px-4 py-2 hover:text-white"
                   >
