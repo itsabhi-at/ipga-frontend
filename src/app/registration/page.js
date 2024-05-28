@@ -71,7 +71,7 @@ function Registration() {
   const [primaryCity, setPrimaryCity] = useState("");
   const [primaryState, setPrimaryState] = useState("");
   const [addressCheck, setAddressCheck] = useState(true);
-  const [country, setCountry] = useState({ id: 1, name: "India" });
+  const [country, setCountry] = useState({ id: 772, name: "India" });
   const [isFormSubmitted, setIsFormSubmitted] = useState(false);
   const [formOneSubmitted, setFormOneSubmitted] = useState(false);
   const [formTwoSubmitted, setFormTwoSubmitted] = useState(false);
