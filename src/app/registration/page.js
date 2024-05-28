@@ -371,7 +371,8 @@ function Registration() {
     await postCallMutation({
       url: "accounts/bank-transfer",
       body: {
-        amount: isIndian ? (isCodeValid ? 2360 : 3540) : 110,
+        amount: isIndian ? (isCodeValid ? 2360 : 3540) : 118,
+        tax: isIndian ? (isCodeValid ? 360 : 540) : 18,
       },
       accessToken,
     })
