@@ -547,7 +547,7 @@ function Registration() {
                       <>
                         {" "}
                         <TextInputField
-                          labelText={"GST No. Upload (Indian Delegates)"}
+                          labelText={"GST Number (Indian Delegates)"}
                           placeholder={"Upload GST No."}
                           placeholderImage={fIcon}
                           htmlFor={"gstUpload"}
@@ -559,6 +559,9 @@ function Registration() {
                           isSubmitted={isFormSubmitted}
                           errorMessage={"Field is required"}
                         />
+                        <p className="text-gray-700 text-[12px] mb-3 capitalize">
+                          If you want GST Invoice please add Gst Number
+                        </p>
                         <NumberInputField
                           labelText={"Aadhar Card Number (Indian Delegates)"}
                           placeholder={"Enter your Aadhar Card Number"}
@@ -779,9 +782,10 @@ function Registration() {
                       placeholderImage={fIcon}
                       errorMessage={"Business Number is required"}
                       handleInputChange={handleInputChange}
-                      validationFunctionName={validateMobileNumber}
+                      validationFunctionName={validateTextField}
                       isFieldRequired={isFieldRequired("businessPhone")}
                       isSubmitted={isFormSubmitted}
+                      maxLength={20}
                     />
                     <NumberInputField
                       labelText={"Mobile Number"}
@@ -792,9 +796,10 @@ function Registration() {
                       placeholderImage={fIcon}
                       errorMessage={"Mobile Number is required"}
                       handleInputChange={handleInputChange}
-                      validationFunctionName={validateMobileNumber}
+                      validationFunctionName={validateTextField}
                       isFieldRequired={isFieldRequired("mobile")}
                       isSubmitted={isFormSubmitted}
+                      maxLength={20}
                     />
                     {formLoading ? (
                       <div className="flex items-center justify-center">
