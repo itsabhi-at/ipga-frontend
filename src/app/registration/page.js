@@ -23,7 +23,7 @@ import {
   validatePassport,
   validateTextField,
 } from "../constants/validations";
-
+import axios from "axios";
 import bgImage from "@/app/assets/bgImage.jpeg";
 import { AiOutlineClose } from "react-icons/ai";
 import DropdownField from "../input-components/DropdownField";
@@ -389,6 +389,44 @@ function Registration() {
       });
   };
   const handleOnIntCity = (value) => {};
+  const handlePayNow = async () => {
+    postCallMutation({
+      url: "accounts/payment",
+      body: {
+        amount: isIndian ? (isCodeValid ? 2360 : 3540) : 118,
+        order_id: "12345",
+        currency: "INR",
+        redirect_url: "https://anrevents.in/success",
+        cancel_url: "https://anrevents.in/failure",
+      },
+      accessToken,
+    })
+      .unwrap()
+      .then((res) => {
+        // Create a form and submit it
+        const form = document.createElement("form");
+        form.method = "POST";
+        form.action = res.ccavenue_url;
+
+        const encRequestInput = document.createElement("input");
+        encRequestInput.type = "hidden";
+        encRequestInput.name = "encRequest";
+        encRequestInput.value = res.ccavenue_request.encRequest;
+        form.appendChild(encRequestInput);
+
+        const accessCodeInput = document.createElement("input");
+        accessCodeInput.type = "hidden";
+        accessCodeInput.name = "access_code";
+        accessCodeInput.value = res.ccavenue_request.access_code;
+        form.appendChild(accessCodeInput);
+
+        document.body.appendChild(form);
+        form.submit();
+      })
+      .catch((e) => {
+        toast.error(e.message);
+      });
+  };
   return (
     <main className="h-auto md:h-screen md:bg-white bg-[#F3F5F8] min-h-screen relative">
       <div className="md:flex h-full w-full relative z-30">
@@ -549,7 +587,7 @@ function Registration() {
                         {" "}
                         <TextInputField
                           labelText={"GST Number (Indian Delegates)"}
-                          placeholder={"Upload GST No."}
+                          placeholder={"Enter GST Number"}
                           placeholderImage={fIcon}
                           htmlFor={"gstUpload"}
                           name={"gstUpload"}
@@ -887,40 +925,46 @@ function Registration() {
                 Delegate
               </p>
               <div className=" w-full md:w-1/2 space-y-4">
-                <div className="flex flex-col w-full">
-                  <label
-                    htmlFor="delegateCode"
-                    className="text-[#000] text-[14px] block mb-2"
-                  >
-                    Please enter your Patron unique code
-                  </label>
-                  <input
-                    name="delegateCode"
-                    value={delegateCode}
-                    onChange={handleInputChange}
-                    placeholder="Patron Unique code if any"
-                    className="w-full p-2 outline-none border border-[#000] rounded-md mb-2 text-[15px] text-[#000] bg-transparent placeholder:text-gray-600"
-                    type="text"
-                  />
-                  {isCodeValid ? (
-                    <p className="text-green-700 text-sm font-medium">
-                      <span className="inline-block font-semibold">
-                        <FcCheckmark className="font-semibold" />
-                      </span>
-                      &nbsp; Code Applied Successfully
-                    </p>
-                  ) : null}
-                </div>
+                {isIndian && (
+                  <>
+                    <div className="flex flex-col w-full">
+                      <label
+                        htmlFor="delegateCode"
+                        className="text-[#000] text-[14px] block mb-2"
+                      >
+                        Please enter your Patron unique code
+                      </label>
 
-                <div className="flex items-end justify-center items-center">
-                  <button
-                    type="button"
-                    onClick={handleDelegateVerification}
-                    className="text-[#373737] border border-[#373737] p-2 rounded-md hover:shadow-lg"
-                  >
-                    Verify
-                  </button>
-                </div>
+                      <input
+                        name="delegateCode"
+                        value={delegateCode}
+                        onChange={handleInputChange}
+                        placeholder="Patron Unique code if any"
+                        className="w-full p-2 outline-none border border-[#000] rounded-md mb-2 text-[15px] text-[#000] bg-transparent placeholder:text-gray-600"
+                        type="text"
+                      />
+                      {isCodeValid ? (
+                        <p className="text-green-700 text-sm font-medium">
+                          <span className="inline-block font-semibold">
+                            <FcCheckmark className="font-semibold" />
+                          </span>
+                          &nbsp; Code Applied Successfully
+                        </p>
+                      ) : null}
+                    </div>
+
+                    <div className="flex justify-center items-center">
+                      <button
+                        type="button"
+                        onClick={handleDelegateVerification}
+                        className="text-[#373737] border border-[#373737] p-2 rounded-md hover:shadow-lg"
+                      >
+                        Verify
+                      </button>
+                    </div>
+                  </>
+                )}
+
                 <div className="text-black text-center">
                   {isIndian ? (
                     <>
@@ -968,7 +1012,7 @@ function Registration() {
                 <div className="flex items-center justify-center gap-x-4 text-black font-semibold">
                   <button
                     disabled={!acceptTnc}
-                    onClick={() => {}}
+                    onClick={handlePayNow}
                     className="bg-[#373737] hover:bg-[#000000] rounded-md text-white px-4 py-2 hover:text-white"
                   >
                     Pay Now
