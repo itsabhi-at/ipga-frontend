@@ -1,4 +1,5 @@
 // pages/success.js
+"use client";
 import { useEffect } from "react";
 
 const Success = () => {

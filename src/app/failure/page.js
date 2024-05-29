@@ -1,4 +1,5 @@
 // pages/failure.js
+"use client";
 import { useEffect } from "react";
 
 const Failure = () => {
