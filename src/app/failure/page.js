@@ -5,6 +5,7 @@ import { useEffect } from "react";
 const Failure = () => {
   useEffect(() => {
     // Handle failure logic
+    window.location.reload();
   }, []);
 
   return (

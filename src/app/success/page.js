@@ -5,6 +5,7 @@ import { useEffect } from "react";
 const Success = () => {
   useEffect(() => {
     // Handle success logic
+    window.location.reload();
   }, []);
 
   return (
