@@ -4,8 +4,14 @@ import { useEffect } from "react";
 
 const Failure = () => {
   useEffect(() => {
-    // Handle failure logic
-    window.location.reload();
+    const hasRefreshed = localStorage.getItem("hasRefreshed");
+
+    if (!hasRefreshed) {
+      localStorage.setItem("hasRefreshed", "true");
+      window.location.reload();
+    } else {
+      localStorage.removeItem("hasRefreshed");
+    }
   }, []);
 
   return (
