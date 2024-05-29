@@ -7,7 +7,11 @@ const Success = () => {
     // Handle success logic
   }, []);
 
-  return <div>Payment Successful!</div>;
+  return (
+    <div className="flex items-center justify-center min-h-screen w-full text-white text-2xl">
+      Payment Successful!
+    </div>
+  );
 };
 
 export default Success;
