@@ -427,9 +427,7 @@ function Registration() {
         toast.error(e.message);
       });
   };
-  useEffect(() => {
-    setModalIsOpen(true);
-  }, []);
+
   return (
     <main className="h-auto md:h-screen md:bg-white bg-[#F3F5F8] min-h-screen relative">
       <div className="md:flex h-full w-full relative z-30">
