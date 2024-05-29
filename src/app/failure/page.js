@@ -8,7 +8,7 @@ const Failure = () => {
   }, []);
 
   return (
-    <div className="flex items-center justify-center min-h-screen w-full text-white text-2xl">
+    <div className="flex items-center justify-center min-h-screen w-full text-white text-2xl relative z-30">
       Payment Failed. Please try again.
     </div>
   );
