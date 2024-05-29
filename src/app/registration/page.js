@@ -23,7 +23,7 @@ import {
   validatePassport,
   validateTextField,
 } from "../constants/validations";
-import axios from "axios";
+
 import bgImage from "@/app/assets/bgImage.jpeg";
 import { AiOutlineClose } from "react-icons/ai";
 import DropdownField from "../input-components/DropdownField";
