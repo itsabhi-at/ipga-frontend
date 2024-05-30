@@ -393,10 +393,8 @@ function Registration() {
     postCallMutation({
       url: "accounts/payment",
       body: {
-        // amount: isIndian ? (isCodeValid ? 2360 : 3540) : 118,
-        amount: 2,
-        order_id: "12345",
-        currency: "INR",
+        amount: isIndian ? (isCodeValid ? 2360 : 3540) : 118,
+        currency: isIndian ? "INR" : "USD",
         redirect_url: "https://anrevents.in/success",
         cancel_url: "https://anrevents.in/failure",
       },
