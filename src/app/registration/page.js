@@ -433,7 +433,7 @@ function Registration() {
     <main className="h-auto md:h-screen md:bg-white bg-[#F3F5F8] min-h-screen relative">
       <div className="md:flex h-full w-full relative z-30">
         <div className="flex-1 w-full h-full bg-transparent p-4 flex flex-col ">
-          <div className="flex items-center justify-between">
+          <div className="flex items-center justify-between static md:relative top-32">
             <div className="flex gap-2 items-center">
               <div className="h-4 w-4 rounded-full bg-gray-400"></div>
               <h1 className="text-white font-medium">BDS 2024</h1>

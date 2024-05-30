@@ -9,7 +9,7 @@ function Landing() {
   return (
     <main className="md:h-screen h-[90vh] min-h-screen relative z-30">
       <div className="h-full w-full flex items-center justify-center md:pt-0 pt-6">
-        <div className="bg-white bg-opacity-70 md:h-[80%] md:w-[80%] w-[90%] h-[90vh] overflow-auto rounded-lg p-4 text-black">
+        <div className="bg-white bg-opacity-70 md:h-[70%] md:w-[70%] w-[80%] h-[80vh] overflow-auto rounded-lg p-4 text-black">
           <p>Dear Delegates,</p>
           <p>
             <br />
