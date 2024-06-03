@@ -289,7 +289,7 @@ function Registration() {
         body = {
           gst_number: gstUpload,
           aadhar_number: aadharCardNumber,
-          aadhar_image: aadharUpload,
+          aadhar_file: aadharUpload,
           ...body,
         };
       } else {
