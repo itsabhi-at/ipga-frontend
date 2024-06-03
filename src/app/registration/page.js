@@ -288,7 +288,7 @@ function Registration() {
       if (isIndian) {
         body = {
           gst_number: gstUpload,
-          addhar_number: aadharCardNumber,
+          aadhar_number: aadharCardNumber,
           aadhar_image: aadharUpload,
           ...body,
         };
