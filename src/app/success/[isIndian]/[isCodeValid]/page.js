@@ -3,7 +3,17 @@
 import { useEffect } from "react";
 import success from "@/app/assets/success.svg";
 import Image from "next/image";
+import { useParams } from "next/navigation";
+import { usePostCallWithAuthMutation } from "@/app/services/universalApi";
 const Success = () => {
+  let accessToken = null;
+  typeof window !== "undefined"
+    ? (accessToken = localStorage.getItem("accessToken"))
+    : null;
+  const params = useParams;
+  const isIndian = params.isIndian;
+  const isCodeValid = params.isCodeValid;
+  const [postMutation] = usePostCallWithAuthMutation();
   useEffect(() => {
     if (typeof window !== "undefined") {
       const hasRefreshed = sessionStorage.getItem("hasRefreshedOnce");
@@ -14,6 +24,17 @@ const Success = () => {
       }
     }
   }, []);
+  useEffect(() => {
+    const body = {
+      amount: isIndian ? (isCodeValid ? 2360 : 3540) : 118,
+      tax: isIndian ? (isCodeValid ? 360 : 540) : 18,
+    };
+    postMutation({
+      url: "accounts/payment-success",
+      body: body,
+      accessToken,
+    }).unwrap();
+  }, [accessToken]);
 
   return (
     <main className="md:h-screen h-[90vh] min-h-screen relative z-30">

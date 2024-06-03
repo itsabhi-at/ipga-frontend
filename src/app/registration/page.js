@@ -7,6 +7,7 @@ import circle from "@/app/assets/circle.png";
 import toast from "react-hot-toast";
 import { useRouter } from "next/navigation";
 import {
+  useGetCallWithAuthMutation,
   usePostCallWithAuthMutation,
   usePostCallWithoutAuthMutation,
   usePutCallWithAuthMutation,
@@ -80,9 +81,10 @@ function Registration() {
   const [bankTransferModal, setBankTransferModal] = useState(false);
   const [delegateCode, setDelegateCode] = useState("");
   const [isCodeValid, setIsCodeValid] = useState(false);
+  const [isDataFound, setIsDataFound] = useState(false);
   const [postCallMutation] = usePostCallWithAuthMutation();
   const [putCallMutation] = usePutCallWithAuthMutation();
-
+  const [getCallMutation] = useGetCallWithAuthMutation();
   const handleInputChange = (event, id, country) => {
     const { name, value } = event.target;
     if (name === "acceptTnc") setAcceptTnc(event.target.checked);
@@ -312,34 +314,54 @@ function Registration() {
           ...body,
         };
       }
-
-      await postCallMutation({
-        url: "accounts/details",
-        body: body,
-        accessToken,
-      })
-        .unwrap()
-        .then((res) => {
-          if (res.status == "success") {
-            setFormLoading(false);
-            setModalIsOpen(true);
-          } else {
-            setFormLoading(false);
-            toast.error(res.message);
-          }
+      if (isDataFound) {
+        // data found
+        await putCallMutation({
+          url: "accounts/details/update",
+          body: body,
+          accessToken,
         })
-        .catch((e) => {
-          setFormLoading(false);
-          toast.error(e.message);
-        });
+          .unwrap()
+          .then((res) => {
+            if (res.status == "success") {
+              setFormLoading(false);
+              setModalIsOpen(true);
+            } else {
+              setFormLoading(false);
+              toast.error(res.message);
+            }
+          })
+          .catch((e) => {
+            setFormLoading(false);
+            toast.error(e.message);
+          });
+      } else {
+        // data not found
+        await postCallMutation({
+          url: "accounts/details",
+          body: body,
+          accessToken,
+        })
+          .unwrap()
+          .then((res) => {
+            if (res.status == "success") {
+              setFormLoading(false);
+              setModalIsOpen(true);
+            } else {
+              setFormLoading(false);
+              toast.error(res.message);
+            }
+          })
+          .catch((e) => {
+            setFormLoading(false);
+            toast.error(e.message);
+          });
+      }
+
       // }
     } else {
       setFormLoading(false);
-      console.log("Form Not Valid");
       toast.error("Please Fill All Fields Required");
-      //   if (!tnc) {
-      //     toast.info("Please agree to the Terms of Service");
-      //   }
     }
   };
   const handleDelegateVerification = async (event) => {
@@ -388,6 +410,41 @@ function Registration() {
         toast.error(e.message);
       });
   };
+  const getUserData = async () => {
+    await getCallMutation({
+      url: "accounts/details/update",
+      accessToken,
+    })
+      .unwrap()
+      .then((res) => {
+        if (res.status == "success") {
+          console.log("coming here ");
+          setTitle(res?.data?.title ?? "");
+          setFirstName(res?.data?.first_name ?? "");
+          setLastName(res?.data?.last_name ?? "");
+          setEmail(res?.data?.email ?? "");
+          setOrganization(res?.data?.organization ?? "");
+          setDesignation(res?.data?.designation);
+          setGstUpload(res?.data?.gst_upload ?? "");
+          setAadharCardNumber(res?.data?.aadhar_number ?? "");
+          setAadharUpload(res?.data?.aadhar_file ?? "");
+          setPassportNumber(res?.data?.passport_number ?? "");
+          setPassportUpload(res?.data?.passport_upload ?? "");
+          setAddress(res?.data?.address ?? "");
+          setPincode(res?.data?.pincode ?? "");
+          setCity(res?.data?.city ?? "");
+          setState(res?.data?.state ?? "");
+          setPhone(res?.data?.business_number ?? "");
+          setMobile(res?.data?.mobile_number ?? "");
+          setIsDataFound(true);
+        } else {
+        }
+      })
+      .catch((error) => {});
+  };
+  useEffect(() => {
+    getUserData();
+  }, []);
   const handleOnIntCity = (value) => {};
   const handlePayNow = async () => {
     postCallMutation({
@@ -395,7 +452,7 @@ function Registration() {
       body: {
         amount: isIndian ? (isCodeValid ? 2360 : 3540) : 118,
         currency: isIndian ? "INR" : "USD",
-        redirect_url: "https://anrevents.in/success",
+        redirect_url: `https://anrevents.in/success/${isIndian}/${isCodeValid}`,
         cancel_url: "https://anrevents.in/failure",
       },
       accessToken,
