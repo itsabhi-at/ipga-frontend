@@ -250,3 +250,27 @@ body {
     text-wrap: balance;
   }
 }
+
+/* print.css */
+@media print {
+  @page {
+    size: B2;
+    margin: 0;
+  }
+
+  body {
+    margin: 0;
+    padding: 0;
+  }
+
+  .print-container {
+    width: 210mm;
+    height: 297mm;
+    padding: 20mm;
+    box-sizing: border-box;
+  }
+
+  .no-print {
+    display: none;
+  }
+}

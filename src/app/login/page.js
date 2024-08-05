@@ -71,7 +71,13 @@ function Login() {
         .then((res) => {
           if (res.status == "success") {
             localStorage.setItem("accessToken", res.data.access);
-            router.push("/registration");
+
+            if (res.data.role == "OFFSITE") {
+              router.push("/registration-offsite");
+            } else {
+              router.push("/registration");
+            }
+
             // save access token
           } else {
             toast.error(res?.message);
