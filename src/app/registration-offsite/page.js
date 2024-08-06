@@ -620,7 +620,7 @@ function RegistrationOffsite() {
                       isFieldRequired={isFieldRequired("organization")}
                       isSubmitted={isFormSubmitted}
                     />
-                    <TextInputField
+                    {/* <TextInputField
                       labelText={"Enter your Designation"}
                       placeholder={"Designation"}
                       htmlFor={"designation"}
@@ -632,7 +632,7 @@ function RegistrationOffsite() {
                       validationFunctionName={validateTextField}
                       isFieldRequired={isFieldRequired("designation")}
                       isSubmitted={isFormSubmitted}
-                    />
+                    /> */}
                     <AutoCompleteDropdown
                       htmlFor={"country"}
                       labelText={"Choose Country"}
@@ -668,7 +668,7 @@ function RegistrationOffsite() {
                         <p className="text-gray-700 text-[12px] mb-3 capitalize">
                           If you want GST Invoice please add Gst Number
                         </p>
-                        <NumberInputField
+                        {/* <NumberInputField
                           labelText={"Aadhar Card Number (Indian Delegates)"}
                           placeholder={"Enter your Aadhar Card Number"}
                           htmlFor={"aadharCardNumber"}
@@ -695,7 +695,7 @@ function RegistrationOffsite() {
                           photoUploaded={isAadharUploaded}
                           isSubmitted={isFormSubmitted}
                           errorMessage={"Field is required"}
-                        />
+                        /> */}
                       </>
                     ) : (
                       <>
@@ -748,7 +748,7 @@ function RegistrationOffsite() {
                       isFieldRequired={isFieldRequired("address")}
                       isSubmitted={isFormSubmitted}
                     />
-                    <NumberInputField
+                    {/* <NumberInputField
                       labelText={"Enter your Pincode"}
                       placeholder={"Pincode"}
                       htmlFor={"pincode"}
@@ -761,7 +761,7 @@ function RegistrationOffsite() {
                       isFieldRequired={isFieldRequired("pincode")}
                       isSubmitted={isFormSubmitted}
                       maxLength={6}
-                    />
+                    /> */}
                     <TextInputField
                       labelText={"Enter your City"}
                       placeholder={"City"}
@@ -820,7 +820,7 @@ function RegistrationOffsite() {
                         <p className="font-bold underline text-2xl mb-4">
                           Primary Address
                         </p>
-                        <NumberInputField
+                        {/* <NumberInputField
                           labelText={"Enter your Pincode"}
                           placeholder={"Pincode"}
                           htmlFor={"primaryPincode"}
@@ -833,7 +833,7 @@ function RegistrationOffsite() {
                           isFieldRequired={isFieldRequired("primaryPincode")}
                           isSubmitted={isFormSubmitted}
                           maxLength={6}
-                        />
+                        /> */}
                         <TextInputField
                           labelText={"Enter your Complete Address"}
                           placeholder={"Primary Address"}
@@ -879,7 +879,7 @@ function RegistrationOffsite() {
                     <p className="font-bold underline text-2xl my-4">
                       Contact Information
                     </p>
-                    <NumberInputField
+                    {/* <NumberInputField
                       labelText={"Business/Office Number"}
                       placeholder={"Enter your Business/Office Number"}
                       htmlFor={"businessPhone"}
@@ -892,7 +892,7 @@ function RegistrationOffsite() {
                       isFieldRequired={isFieldRequired("businessPhone")}
                       isSubmitted={isFormSubmitted}
                       maxLength={20}
-                    />
+                    /> */}
                     <NumberInputField
                       labelText={"Mobile Number"}
                       placeholder={"Enter your Mobile Number"}
@@ -1062,7 +1062,11 @@ function RegistrationOffsite() {
                 Successfully enrolled
               </p>
               <ReactToPrint
-                trigger={() => <button>Print this out!</button>}
+                trigger={() => (
+                  <button className="bg-black py-2 px-4 rounded-md">
+                    Print
+                  </button>
+                )}
                 content={() => componentRef.current}
               />
               {/* <div className=" w-full md:w-1/2 space-y-4">
