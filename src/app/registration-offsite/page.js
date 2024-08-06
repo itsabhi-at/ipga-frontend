@@ -275,6 +275,7 @@ function RegistrationOffsite() {
     ) {
       let body = {
         title: title,
+        email,
         first_name: firstName,
         last_name: lastName,
         organization: organization,
