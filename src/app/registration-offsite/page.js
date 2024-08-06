@@ -1051,12 +1051,12 @@ function RegistrationOffsite() {
       >
         <>
           <div className="MODAL-BODY border border-[#fcfcfc] border-opacity-[16%] bg-white bg-opacity-70  h-[100%] overflow-x-auto w-[100%] rounded-lg py-4 px-4 space-y-2 relative">
-            {/* <div
+            <div
               className="h-8 w-8 bg-white rounded-md flex items-center justify-center absolute right-0 top-0"
               onClick={() => setModalIsOpen(false)}
             >
               <AiOutlineClose className="text-xl text-black" />
-            </div> */}
+            </div>
             <div className="flex flex-col w-full items-center justify-center">
               <p className="text-[18px] text-black font-medium mb-8">
                 Successfully enrolled
