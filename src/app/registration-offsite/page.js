@@ -451,9 +451,9 @@ function RegistrationOffsite() {
       })
       .catch((error) => {});
   };
-  useEffect(() => {
-    getUserData();
-  }, []);
+  //   useEffect(() => {
+  //     getUserData();
+  //   }, []);
   const handleOnIntCity = (value) => {};
   const handlePayNow = async () => {
     postCallMutation({
