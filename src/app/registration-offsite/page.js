@@ -1039,6 +1039,7 @@ function RegistrationOffsite() {
           printData?.data?.first_name + " " + printData?.data?.last_name
         }}`}
         organization={printData?.data?.organization}
+        regId={printData?.data?.reg_id}
       />
       <Modal
         isOpen={modalIsOpen}
